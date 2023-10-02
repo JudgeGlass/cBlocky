@@ -9,8 +9,10 @@
 
 #include <GL/glew.h>
 
+#include "types.h"
+
 static char* get_shader_content(const char* filename);
 
-void load_shader(GLuint* _program_id);
+void load_shader(u32* _program_id);
 
 #endif //CBLOCKY_SHADER_H

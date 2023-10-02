@@ -5,7 +5,7 @@
 
 char* get_shader_content(const char* filename){
     FILE *fp;
-    long size = 0;
+    i64 size = 0;
     char* shader_content;
 
     fp = fopen(filename, "rb");
@@ -23,14 +23,14 @@ char* get_shader_content(const char* filename){
     return shader_content;
 }
 
-void load_shader(GLuint* _program_id){
-    GLuint vertex_shader_id = glCreateShader(GL_VERTEX_SHADER);
-    GLuint fragment_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
+void load_shader(u32* _program_id){
+    u32 vertex_shader_id = glCreateShader(GL_VERTEX_SHADER);
+    u32 fragment_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
 
     const char* v_source = get_shader_content("../res/vertex.glsl");
     const char* f_source = get_shader_content("../res/fragment.glsl");
 
-    GLint result = GL_FALSE;
+    i32 result = GL_FALSE;
     int info_log_length;
 
     printf("Compiling vertex shader...\n");
@@ -40,7 +40,7 @@ void load_shader(GLuint* _program_id){
     glGetShaderiv(vertex_shader_id, GL_COMPILE_STATUS, &result);
     glGetShaderiv(vertex_shader_id, GL_INFO_LOG_LENGTH, &info_log_length);
     if(info_log_length > 0){
-        GLchar* info_log = malloc(sizeof(char) * info_log_length + 1);
+        i8* info_log = malloc(sizeof(char) * info_log_length + 1);
         glGetShaderInfoLog(vertex_shader_id, info_log_length, NULL, info_log);
         printf("ERROR: %s\n", info_log);
     }
@@ -52,7 +52,7 @@ void load_shader(GLuint* _program_id){
     glGetShaderiv(fragment_shader_id, GL_COMPILE_STATUS, &result);
     glGetShaderiv(fragment_shader_id, GL_INFO_LOG_LENGTH, &info_log_length);
     if(info_log_length > 0){
-        GLchar* info_log = malloc(sizeof(char) * info_log_length + 1);
+        i8* info_log = malloc(sizeof(char) * info_log_length + 1);
         glGetShaderInfoLog(fragment_shader_id, info_log_length, NULL, info_log);
         printf("ERROR: %s\n", info_log);
     }
