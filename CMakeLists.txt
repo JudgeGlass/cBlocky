@@ -5,4 +5,14 @@ set(CMAKE_C_STANDARD 11)
 
 LINK_LIBRARIES(SDL2main SDL2 GLEW GL GLU)
 
-add_executable(cBlocky src/main.c src/screen.c src/screen.h src/game.c src/game.h)
+add_executable(cBlocky 
+src/main.c 
+src/screen.c 
+src/screen.h 
+src/game.c 
+src/game.h
+src/mesh.c
+src/mesh.h
+src/shader.c
+src/shader.h
+)
