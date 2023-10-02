@@ -7,7 +7,7 @@
 
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
-#include <gl/glu.h>
+//#include <gl/glu.h>
 #include <SDL2/SDL_opengl.h>
 
 static void render();
