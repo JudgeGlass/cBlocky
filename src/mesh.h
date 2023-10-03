@@ -5,48 +5,58 @@
 
 #include "types.h"
 
-static const f32 cube_vertex_front[] = { //CCW
+static const f32 cube_vertex_right[] = { // CCW
     0.5f, 0.5f, 0.5f,
     0.5f, -0.5f, 0.5f,
     0.5f, -0.5f, -0.5f,
     0.5f, -0.5f, -0.5f,
     0.5f, 0.5f, -0.5f,
-    0.5f, 0.5f, 0.5f,
+    0.5f, 0.5f, 0.5f
+};
 
+static const f32 cube_vertex_left[] = { // CCW
     -0.5f,0.5f,-0.5f, // Left
     -0.5f,-0.5f,-0.5f,
     -0.5f,-0.5f,0.5f,
     -0.5f,-0.5f,0.5f,
     -0.5f,0.5f,0.5f,
-    -0.5f,0.5f,-0.5f,
+    -0.5f,0.5f,-0.5f
+};
 
+static const f32 cube_vertex_top[] = { // CCW
     0.5f,0.5f,-0.5f,
     -0.5f,0.5f,-0.5f,
     -0.5f,0.5f,0.5f,
     -0.5f,0.5f,0.5f,
     0.5f,0.5f,0.5f,
-    0.5f,0.5f,-0.5f,
+    0.5f,0.5f,-0.5f
+};
 
+static const f32 cube_vertex_bottom[] = { // CCW
     -0.5f, -0.5f, 0.5f,
     -0.5f, -0.5f, -0.5f,
     0.5f, -0.5f, -0.5f,
     0.5f, -0.5f, -0.5f,
     0.5f, -0.5f, 0.5f,
-    -0.5f, -0.5f, 0.5f,
+    -0.5f, -0.5f, 0.5f
+};
 
+static const f32 cube_vertex_front[] = { //CCW
     -0.5f,0.5f,0.5f,
     -0.5f,-0.5f,0.5f,
     0.5f,-0.5f,0.5f,
     0.5f,-0.5f,0.5f,
     0.5f,0.5f,0.5f,
-    -0.5f,0.5f,0.5f,
+    -0.5f,0.5f,0.5f
+};
 
+static const f32 cube_vertex_back[] = { //CCW
     0.5f, 0.5f, -0.5f,
     0.5f, -0.5f, -0.5f,
     -0.5f, -0.5f, -0.5f,
     -0.5f, -0.5f, -0.5f,
     -0.5f, 0.5f, -0.5f,
-    0.5f, 0.5f, -0.5f
+    0.5f, 0.5f, -0.5f 
 };
 
 typedef struct {

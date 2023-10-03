@@ -11,7 +11,7 @@
 
 #include "types.h"
 #include "shader.h"
-#include "mesh.h"
+#include "chunk.h"
 
 static void render();
 static void clean();

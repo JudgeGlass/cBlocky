@@ -11,22 +11,14 @@ SDL_Window *window;
 
 u32 program_id;
 
-mesh_t test_mesh;
+chunk_t test_chunk;
 
 void init(){
     window = create_window("CBlocky", 800, 480);
 
     load_shader(&program_id);
 
-    glGenVertexArrays(1, &test_mesh.VAO);
-    glGenBuffers(1, &test_mesh.VBO);
-
-    glBindVertexArray(test_mesh.VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, test_mesh.VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(f32) * 18 * 6, cube_vertex_front, GL_STATIC_DRAW);
-    glBindVertexArray(0);
-
-    test_mesh.vertex_count = 18 * 6;
+    init_chunk(&test_chunk, 0, 0);
 }
 
 void loop(){
@@ -58,7 +50,7 @@ void render(){
 
     glUseProgram(program_id);
 
-    draw_mesh(&test_mesh);
+    draw_chunk(&test_chunk);
 }
 
 void clean(){

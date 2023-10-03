@@ -1,5 +1,7 @@
 #define SDL_MAIN_HANDLED
 
+#define STB_DS_IMPLEMENTATION
+
 #include "game.h"
 
 
