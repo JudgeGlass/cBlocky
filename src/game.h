@@ -7,8 +7,11 @@
 
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
-//#include <gl/glu.h>
 #include <SDL2/SDL_opengl.h>
+
+#include "types.h"
+#include "shader.h"
+#include "mesh.h"
 
 static void render();
 static void clean();
