@@ -170,7 +170,7 @@ static const f32 texture_uv_dirt[] = {
     3.0f/16.0f, 0.0f
 };
 
-static void add_texture_face(const u8 &block_id, face_t face, f32 **texture_coords){
+void add_texture_face(const u8 block_id, face_t face, f32 **texture_coords){
     if(block_id == 0) return;
 
     int offset = 0;
