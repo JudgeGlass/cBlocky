@@ -16,6 +16,7 @@
 #include "types.h"
 #include "shader.h"
 #include "chunk.h"
+#include "camera.h"
 
 static void render();
 static void clean();

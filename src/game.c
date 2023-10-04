@@ -12,12 +12,14 @@ SDL_Window *window;
 u32 program_id;
 u32 texture_id;
 chunk_t test_chunk;
+camera_t camera;
 
 void init(){
     window = create_window("CBlocky", 800, 480);
 
     program_id = load_shader();
     load_textures();
+    init_camera(&camera, program_id);
 
     init_chunk(&test_chunk, 0, 0);
 }
@@ -33,6 +35,21 @@ void loop(){
         while(SDL_PollEvent(&e) != 0){
             if(e.type == SDL_QUIT || e.key.keysym.sym == SDLK_ESCAPE){
                 quit = true;
+            }
+
+            if(e.key.keysym.sym == SDLK_a){
+                move_camera_left(&camera, 0.5f);
+                printf("Camera position: %f, %f, %f\n", camera.position[0], camera.position[1], camera.position[2]);
+            }
+
+            if(e.key.keysym.sym == SDLK_w){
+                move_camera_forward(&camera, 0.5f);
+                printf("Camera position: %f, %f, %f\n", camera.position[0], camera.position[1], camera.position[2]);
+            }
+
+            if(e.key.keysym.sym == SDLK_s){
+                move_camera_backward(&camera, 0.5f);
+                printf("Camera position: %f, %f, %f\n", camera.position[0], camera.position[1], camera.position[2]);
             }
         }
 
@@ -77,8 +94,8 @@ void render(){
 
     glUseProgram(program_id);
 
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     draw_chunk(&test_chunk, texture_id);
+    render_camera(&camera, program_id);
 }
 
 void clean(){

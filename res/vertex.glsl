@@ -11,10 +11,7 @@ out vec2 TexCoord;
 out float light_level;
 
 void main(){
-    vec3 pos = vertexPosition_modelspace;
-    //pos.x -= 20.0f;
-
-    gl_Position = vec4(pos, 1.0f);  
+    gl_Position = MVP * vec4(vertexPosition_modelspace, 1.0f);  
 
     TexCoord = aTexCoord;
     light_level = light_level_in;

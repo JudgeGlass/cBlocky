@@ -20,4 +20,6 @@ src/chunk.c
 src/chunk.h
 src/texture.h
 src/texture.c
+src/camera.h
+src/camera.c
 )
