@@ -13,6 +13,6 @@
 
 static char* get_shader_content(const char* filename);
 
-void load_shader(u32* _program_id);
+u32 load_shader();
 
 #endif //CBLOCKY_SHADER_H

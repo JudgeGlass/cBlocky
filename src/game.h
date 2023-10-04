@@ -5,6 +5,10 @@
 
 #include <stdio.h>
 
+#ifndef STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+#endif
+
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
 #include <SDL2/SDL_opengl.h>
@@ -15,6 +19,7 @@
 
 static void render();
 static void clean();
+static void load_textures();
 
 void init();
 void loop();

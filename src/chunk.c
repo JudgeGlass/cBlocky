@@ -3,9 +3,12 @@
 void create_mesh(chunk_t *chunk){
     mesh_t mesh;
     f32 *vertices = NULL;
+    f32 *textures = NULL;
 
     glGenVertexArrays(1, &mesh.VAO);
+    glBindVertexArray(mesh.VAO);
     glGenBuffers(1, &mesh.VBO);
+    glGenBuffers(1, &mesh.TBO);
 
     for(i32 x = 0; x < CHUNK_WIDTH; x++){
         for(i32 y = 0; y < CHUNK_HEIGHT; y++){
@@ -16,31 +19,38 @@ void create_mesh(chunk_t *chunk){
                     continue;
                 }
 
-                add_face(x, y, z, chunk->cx, chunk->cz, FRONT, block.id, &vertices);
-                add_face(x, y, z, chunk->cx, chunk->cz, BACK, block.id, &vertices);  
-                add_face(x, y, z, chunk->cx, chunk->cz, LEFT, block.id, &vertices);
-                add_face(x, y, z, chunk->cx, chunk->cz, RIGHT, block.id, &vertices);
-                add_face(x, y, z, chunk->cx, chunk->cz, TOP, block.id, &vertices);
-                add_face(x, y, z, chunk->cx, chunk->cz, BOTTOM, block.id, &vertices);
+                add_face(x, y, z, chunk->cx, chunk->cz, FRONT, block.id, &vertices, &textures);
+                add_face(x, y, z, chunk->cx, chunk->cz, BACK, block.id, &vertices, &textures);  
+                add_face(x, y, z, chunk->cx, chunk->cz, LEFT, block.id, &vertices, &textures);
+                add_face(x, y, z, chunk->cx, chunk->cz, RIGHT, block.id, &vertices, &textures);
+                add_face(x, y, z, chunk->cx, chunk->cz, TOP, block.id, &vertices, &textures);
+                add_face(x, y, z, chunk->cx, chunk->cz, BOTTOM, block.id, &vertices, &textures);
 
             }
         }
     }
 
-    i32 size = arrlen(vertices);
+    i32 size_v = arrlen(vertices);
+    i32 size_tex = arrlen(textures);
 
     glBindVertexArray(mesh.VAO);
+
     glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(f32) * size, vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(f32) * size_v, vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, mesh.TBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(f32) * size_tex, textures, GL_STATIC_DRAW);
+
     glBindVertexArray(0);
 
-    mesh.vertex_count = size;
+    mesh.vertex_count = size_v;
 
     chunk->mesh = mesh;
     arrfree(vertices);
+    arrfree(textures);
 }
 
-void add_face(u8 x, u8 y, u8 z, i32 cx, i32 cz, face_t face, u8 id, f32 **vertices){
+void add_face(u8 x, u8 y, u8 z, i32 cx, i32 cz, face_t face, u8 id, f32 **vertices, f32 **tex_coords){
     const float *current_face;
     switch (face)
     {
@@ -72,6 +82,7 @@ void add_face(u8 x, u8 y, u8 z, i32 cx, i32 cz, face_t face, u8 id, f32 **vertic
         arrpush(*vertices, current_face[i + 1] + y);
         arrpush(*vertices, current_face[i + 2] + z + cz * CHUNK_DEPTH);
     }
+    add_texture_face(id, face, &(*tex_coords));
 }
 
 void init_chunk(chunk_t *chunk, i32 cx, i32 cz){
@@ -96,8 +107,8 @@ void init_chunk(chunk_t *chunk, i32 cx, i32 cz){
     create_mesh(chunk);
 }
 
-void draw_chunk(const chunk_t *chunk){
-    draw_mesh(&chunk->mesh);
+void draw_chunk(const chunk_t *chunk, u32 texture_id){
+    draw_mesh(&chunk->mesh, texture_id);
 }
 
 void update_chunk(chunk_t *chunk){

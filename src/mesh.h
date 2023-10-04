@@ -66,6 +66,6 @@ typedef struct {
     size_t vertex_count;
 } mesh_t;
 
-void draw_mesh(const mesh_t *mesh);
+void draw_mesh(const mesh_t *mesh, u32 texture_id);
 
 #endif

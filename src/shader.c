@@ -23,7 +23,7 @@ char* get_shader_content(const char* filename){
     return shader_content;
 }
 
-void load_shader(u32* _program_id){
+u32 load_shader(){
     u32 vertex_shader_id = glCreateShader(GL_VERTEX_SHADER);
     u32 fragment_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
 
@@ -68,5 +68,5 @@ void load_shader(u32* _program_id){
     glDeleteShader(vertex_shader_id);
     glDeleteShader(fragment_shader_id);
 
-    _program_id = &program_id;
+    return program_id;
 }

@@ -3,7 +3,7 @@ project(cBlocky C)
 
 set(CMAKE_C_STANDARD 11)
 
-LINK_LIBRARIES(SDL2main SDL2 GLEW GL GLU)
+LINK_LIBRARIES(SDL2main SDL2 GLEW GL GLU -lm)
 
 add_executable(cBlocky 
 src/main.c 
@@ -18,4 +18,6 @@ src/shader.h
 src/block.h
 src/chunk.c
 src/chunk.h
+src/texture.h
+src/texture.c
 )
