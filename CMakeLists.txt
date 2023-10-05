@@ -15,6 +15,7 @@ src/mesh.c
 src/mesh.h
 src/shader.c
 src/shader.h
+src/block.c
 src/block.h
 src/chunk.c
 src/chunk.h

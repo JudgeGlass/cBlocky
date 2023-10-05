@@ -1,7 +1,7 @@
 #include "texture.h"
 
 void add_texture_face(const u8 block_id, face_t face, f32 **texture_coords){
-    if(block_id == 0) return;
+    if(block_id == AIR) return;
 
     int offset = 0;
     switch (face)

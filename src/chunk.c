@@ -15,20 +15,17 @@ void create_mesh(chunk_t *chunk){
             for(i32 z = 0; z < CHUNK_DEPTH; z++){
                 block_t block = chunk->blocks[x + y * CHUNK_WIDTH + z * CHUNK_WIDTH * CHUNK_HEIGHT];
 
-                if(block.id == AIR){
+                if(get_type(&block) == AIR){
                     continue;
                 }
 
-                if(x % 2 == 0 || y % 2 == 0){
-                    block.id = STONE;
-                }
-
-                add_face(x, y, z, chunk->cx, chunk->cz, FRONT, block.id, &vertices, &textures);
-                add_face(x, y, z, chunk->cx, chunk->cz, BACK, block.id, &vertices, &textures);  
-                add_face(x, y, z, chunk->cx, chunk->cz, LEFT, block.id, &vertices, &textures);
-                add_face(x, y, z, chunk->cx, chunk->cz, RIGHT, block.id, &vertices, &textures);
-                add_face(x, y, z, chunk->cx, chunk->cz, TOP, block.id, &vertices, &textures);
-                add_face(x, y, z, chunk->cx, chunk->cz, BOTTOM, block.id, &vertices, &textures);
+                u8 id = get_type(&block);
+                add_face(x, y, z, chunk->cx, chunk->cz, FRONT, id, &vertices, &textures);
+                add_face(x, y, z, chunk->cx, chunk->cz, BACK, id, &vertices, &textures);  
+                add_face(x, y, z, chunk->cx, chunk->cz, LEFT, id, &vertices, &textures);
+                add_face(x, y, z, chunk->cx, chunk->cz, RIGHT, id, &vertices, &textures);
+                add_face(x, y, z, chunk->cx, chunk->cz, TOP, id, &vertices, &textures);
+                add_face(x, y, z, chunk->cx, chunk->cz, BOTTOM, id, &vertices, &textures);
 
             }
         }
@@ -94,13 +91,22 @@ void init_chunk(chunk_t *chunk, i32 cx, i32 cz){
         for(i32 y = 0; y < CHUNK_HEIGHT; y++){
             for(i32 z = 0; z < CHUNK_DEPTH; z++){
                 block_t block;
-                block.id = AIR;
-                block.x = x;
-                block.y = y;
-                block.z = z;
+                init_block(x, y, z, STONE, 0, &block);
 
-                if(y < 64){
-                    block.id = DIRT;
+                if(y > 64){
+                    //block.id = DIRT;
+                    set_type(&block, AIR);
+                }else if (y == 64){
+                    //block.id = GRASS;
+                    set_type(&block, GRASS);
+                }else if (y < 64){
+                    //block.id = STONE;
+                    set_type(&block, STONE);
+                }
+
+                if(y == 66){
+                    //block.id = STONE;
+                    set_type(&block, STONE);
                 }
 
                 chunk->blocks[x + y * CHUNK_WIDTH + z * CHUNK_WIDTH * CHUNK_HEIGHT] = block;
