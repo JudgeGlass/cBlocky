@@ -99,8 +99,10 @@ void init_chunk(chunk_t *chunk, i32 cx, i32 cz){
                 }else if (y == 64){
                     //block.id = GRASS;
                     set_type(&block, GRASS);
-                }else if (y < 64){
+                }else if (y < 64 && y > 60){
                     //block.id = STONE;
+                    set_type(&block, DIRT);
+                }else if(y < 60){
                     set_type(&block, STONE);
                 }
 

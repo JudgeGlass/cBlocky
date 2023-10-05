@@ -15,7 +15,7 @@ chunk_t test_chunk;
 camera_t camera;
 
 void init(){
-    window = create_window("CBlocky", 800, 600);
+    window = create_window("CBlocky", 1920, 1080);
 
     program_id = load_shader();
     load_textures();
@@ -98,7 +98,7 @@ void load_textures(){
 }
 
 void render(){
-    glViewport(0, 0, 800, 600);
+    glViewport(0, 0, 1920, 1080);
     glClearColor(0.4f, 0.7f, 1.0f, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
