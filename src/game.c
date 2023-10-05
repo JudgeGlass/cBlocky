@@ -15,7 +15,7 @@ chunk_t test_chunk;
 camera_t camera;
 
 void init(){
-    window = create_window("CBlocky", 800, 480);
+    window = create_window("CBlocky", 800, 600);
 
     program_id = load_shader();
     load_textures();
@@ -39,6 +39,11 @@ void loop(){
 
             if(e.key.keysym.sym == SDLK_a){
                 move_camera_left(&camera, 0.5f);
+                printf("Camera position: %f, %f, %f\n", camera.position[0], camera.position[1], camera.position[2]);
+            }
+
+            if(e.key.keysym.sym == SDLK_d){
+                move_camera_right(&camera, -0.5f);
                 printf("Camera position: %f, %f, %f\n", camera.position[0], camera.position[1], camera.position[2]);
             }
 
@@ -85,13 +90,18 @@ void load_textures(){
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(data);
+
+    glEnable(GL_CULL_FACE);
+    glFrontFace(GL_CCW);
+    glCullFace(GL_BACK);
+    glEnable(GL_DEPTH_TEST);
 }
 
 void render(){
     glViewport(0, 0, 800, 600);
     glClearColor(0.4f, 0.7f, 1.0f, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    
     glUseProgram(program_id);
 
     draw_chunk(&test_chunk, texture_id);

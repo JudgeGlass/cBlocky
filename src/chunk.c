@@ -19,6 +19,10 @@ void create_mesh(chunk_t *chunk){
                     continue;
                 }
 
+                if(x % 2 == 0 || y % 2 == 0){
+                    block.id = STONE;
+                }
+
                 add_face(x, y, z, chunk->cx, chunk->cz, FRONT, block.id, &vertices, &textures);
                 add_face(x, y, z, chunk->cx, chunk->cz, BACK, block.id, &vertices, &textures);  
                 add_face(x, y, z, chunk->cx, chunk->cz, LEFT, block.id, &vertices, &textures);
@@ -29,7 +33,7 @@ void create_mesh(chunk_t *chunk){
             }
         }
     }
-
+   
     i32 size_v = arrlen(vertices);
     i32 size_tex = arrlen(textures);
 

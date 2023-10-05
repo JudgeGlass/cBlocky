@@ -31,15 +31,11 @@ void render_camera(camera_t *camera, u32 program_id) {
     glm_mat4_mul(MVP, camera->model, MVP);
 
     u32 matrix_location = glGetUniformLocation(program_id, "MVP");
-    glUniformMatrix4fv(matrix_location, 1, GL_FALSE, &MVP[0][0]);
+    glUniformMatrix4fv(matrix_location, 1, GL_FALSE, (f32 *) MVP);
 }
 
 void move_camera_left(camera_t *camera, f32 amt){
-    vec3 right;
-    glm_vec3_cross(camera->cam_front, camera->cam_up, right);
-    glm_vec3_normalize(right);
-    glm_vec3_scale(right, amt, right);
-    glm_vec3_add(camera->position, right, camera->position);
+    camera->position[0] -= amt;
 }
 
 void move_camera_forward(camera_t *camera, f32 amt){
@@ -49,7 +45,7 @@ void move_camera_forward(camera_t *camera, f32 amt){
     
     // glm_vec3_scale(camera->cam_front, amt, scale_amt);
 
-    camera->position[2] += amt;
+    camera->position[2] -= amt;
 
     //glm_vec3_add(camera->position, scale_amt, camera->position);
 }
@@ -59,9 +55,9 @@ void move_camera_backward(camera_t *camera, f32 amt){
     // glm_vec3_scale(camera->cam_front, -amt, scale_amt);
 
     // glm_vec3_add(camera->position, scale_amt, camera->position);
-    camera->position[2] -= amt;
+    camera->position[2] += amt;
 }
 
 void move_camera_right(camera_t *camera, f32 amt){
-    camera->position[0] += amt;
+    camera->position[0] -= amt;
 }
