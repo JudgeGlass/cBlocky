@@ -106,9 +106,9 @@ void init_chunk(chunk_t *chunk, i32 cx, i32 cz){
                     set_type(&block, STONE);
                 }
 
-                if(y == 66){
+                if(rand() % 3 == 0 && y < 64){
                     //block.id = STONE;
-                    set_type(&block, STONE);
+                    set_type(&block, GLASS);
                 }
 
                 chunk->blocks[x + y * CHUNK_WIDTH + z * CHUNK_WIDTH * CHUNK_HEIGHT] = block;

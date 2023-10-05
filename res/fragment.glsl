@@ -15,5 +15,5 @@ void main(){
     //color.z *= light_level;
 
     out_color = color;
-    //if(out_color.a == 0) discard;
+    if(out_color.a == 0) discard;
 }

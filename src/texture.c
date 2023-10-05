@@ -43,9 +43,9 @@ void add_texture_face(const u8 block_id, face_t face, f32 **texture_coords){
         case DIRT:
             arrpush(*texture_coords, texture_uv_dirt[i]);
             break;
-        // case GLASS:
-        //     texture_coords.push_back(texture_uv_glass[i]);
-        //     break;
+        case GLASS:
+            arrpush(*texture_coords, texture_uv_glass[i]);
+            break;
         default:
             return;
         }

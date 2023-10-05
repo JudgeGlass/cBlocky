@@ -7,6 +7,7 @@
 #define DIRT 1
 #define GRASS 2
 #define STONE 3
+#define GLASS 15
 
 typedef struct {
     // u8 id;
