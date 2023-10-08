@@ -23,6 +23,6 @@ void move_camera_left(camera_t *camera, f32 amt);
 void move_camera_right(camera_t *camera, f32 amt);
 void move_camera_forward(camera_t *camera, f32 amt);
 void move_camera_backward(camera_t *camera, f32 amt);
-
+void move_camera_vertical(camera_t *camera, f32 amt);
 
 #endif
