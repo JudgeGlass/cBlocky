@@ -20,12 +20,12 @@ void create_mesh(chunk_t *chunk){
                 }
 
                 u8 id = get_type(&block);
-                add_face(x, y, z, chunk->cx, chunk->cz, FRONT, id, &vertices, &textures);
-                add_face(x, y, z, chunk->cx, chunk->cz, BACK, id, &vertices, &textures);  
-                add_face(x, y, z, chunk->cx, chunk->cz, LEFT, id, &vertices, &textures);
-                add_face(x, y, z, chunk->cx, chunk->cz, RIGHT, id, &vertices, &textures);
-                add_face(x, y, z, chunk->cx, chunk->cz, TOP, id, &vertices, &textures);
-                add_face(x, y, z, chunk->cx, chunk->cz, BOTTOM, id, &vertices, &textures);
+                add_face(x, y, z, chunk, FRONT, id, &vertices, &textures);
+                add_face(x, y, z, chunk, BACK, id, &vertices, &textures);  
+                add_face(x, y, z, chunk, LEFT, id, &vertices, &textures);
+                add_face(x, y, z, chunk, RIGHT, id, &vertices, &textures);
+                add_face(x, y, z, chunk, TOP, id, &vertices, &textures);
+                add_face(x, y, z, chunk, BOTTOM, id, &vertices, &textures);
 
             }
         }
@@ -51,26 +51,90 @@ void create_mesh(chunk_t *chunk){
     arrfree(textures);
 }
 
-void add_face(u8 x, u8 y, u8 z, i32 cx, i32 cz, face_t face, u8 id, f32 **vertices, f32 **tex_coords){
+u8 is_face_visible(u8 x, u8 y, u8 z, chunk_t *chunk, face_t face, u8 id){
+    i32 cx = chunk->cx;
+    i32 cz = chunk->cz;
+    
+    if(y < 0 || y > CHUNK_HEIGHT - 1){
+        return 1;
+    }
+
+    block_t *block = NULL;
+    if(x < 0){
+        if(cx - 1 >= 0){
+            return 0;
+        }else{
+            return 1;
+        }
+    }else if(x > CHUNK_WIDTH - 1){
+        if(cx + 1 < CHUNK_WIDTH){
+            return 0;
+        }else{
+            return 1;
+        }
+    }else if(z < 0){
+        if(cz - 1 >= 0){
+            return 0;
+        }else{
+            return 1;
+        }
+    }else if(z > CHUNK_DEPTH - 1){
+        if(cz + 1 < CHUNK_DEPTH){
+            return 0;
+        }else{
+            return 1;
+        }
+    }else{
+        block = get_block(chunk, x, y, z);
+    }
+
+    if(get_type(block) == AIR && id == GLASS){
+        return 0;
+    }
+
+    switch (get_type(block))
+    {
+    case AIR:
+    case GLASS:
+        return 1;
+    
+    default:
+        return 0;
+    }
+
+    return 1;
+}
+
+void add_face(u8 x, u8 y, u8 z, chunk_t *chunk, face_t face, u8 id, f32 **vertices, f32 **tex_coords){
+    i32 cx = chunk->cx;
+    i32 cz = chunk->cz;
+    i32 xx = x, yy = y, zz = z;
+
     const float *current_face;
     switch (face)
     {
     case FRONT:
+        zz += 1;
         current_face = cube_vertex_front;
         break;
     case BACK:
+        zz -= 1;
         current_face = cube_vertex_back;
         break;
     case LEFT:
+        xx -= 1;
         current_face = cube_vertex_left;
         break;
     case RIGHT:
+        xx += 1;
         current_face = cube_vertex_right;
         break;
     case TOP:
+        yy += 1;
         current_face = cube_vertex_top;
         break;
     case BOTTOM:
+        yy -= 1;
         current_face = cube_vertex_bottom;
         break;
     
@@ -78,12 +142,18 @@ void add_face(u8 x, u8 y, u8 z, i32 cx, i32 cz, face_t face, u8 id, f32 **vertic
         break;
     }
 
-    for(int i = 0; i < 18; i+=3){
-        arrpush(*vertices, current_face[i] + x + cx * CHUNK_WIDTH);
-        arrpush(*vertices, current_face[i + 1] + y);
-        arrpush(*vertices, current_face[i + 2] + z + cz * CHUNK_DEPTH);
+    if(is_face_visible(xx, yy, zz, chunk, face, id) && id != AIR){
+        for(int i = 0; i < 18; i+=3){
+            arrpush(*vertices, current_face[i] + x + cx * CHUNK_WIDTH);
+            arrpush(*vertices, current_face[i + 1] + y);
+            arrpush(*vertices, current_face[i + 2] + z + cz * CHUNK_DEPTH);
+        }
+        add_texture_face(id, face, &(*tex_coords));
     }
-    add_texture_face(id, face, &(*tex_coords));
+}
+
+block_t *get_block(chunk_t *chunk, u8 x, u8 y, u8 z){
+    return &chunk->blocks[x + y * CHUNK_WIDTH + z * CHUNK_WIDTH * CHUNK_HEIGHT];
 }
 
 void init_chunk(chunk_t *chunk, i32 cx, i32 cz){
@@ -106,11 +176,6 @@ void init_chunk(chunk_t *chunk, i32 cx, i32 cz){
                     set_type(&block, DIRT);
                 }else if(y < 60){
                     set_type(&block, STONE);
-                }
-
-                if(rand() % 3 == 0 && y < 64){
-                    //block.id = STONE;
-                    set_type(&block, GLASS);
                 }
 
                 chunk->blocks[x + y * CHUNK_WIDTH + z * CHUNK_WIDTH * CHUNK_HEIGHT] = block;
