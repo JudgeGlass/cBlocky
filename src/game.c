@@ -15,7 +15,7 @@ world_t world;
 camera_t camera;
 
 void init(){
-    window = create_window("CBlocky", 800, 480);
+    window = create_window("CBlocky", WINDOW_WIDTH, WINDOW_HEIGHT);
 
     program_id = load_shader();
     load_textures();
@@ -55,6 +55,14 @@ void loop(){
             if(e.key.keysym.sym == SDLK_s){
                 move_camera_backward(&camera, 0.5f);
                 printf("Camera position: %f, %f, %f\n", camera.position[0], camera.position[1], camera.position[2]);
+            }
+
+            if(e.key.keysym.sym == SDLK_SPACE){
+                move_camera_vertical(&camera, 0.5f);
+            }
+
+            if(e.key.keysym.sym == SDLK_LSHIFT){
+                move_camera_vertical(&camera, -0.5f);
             }
         }
 
@@ -98,7 +106,7 @@ void load_textures(){
 }
 
 void render(){
-    glViewport(0, 0, 800, 480);
+    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     glClearColor(0.4f, 0.7f, 1.0f, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
