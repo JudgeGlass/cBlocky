@@ -87,6 +87,8 @@ void add_face(u8 x, u8 y, u8 z, i32 cx, i32 cz, face_t face, u8 id, f32 **vertic
 }
 
 void init_chunk(chunk_t *chunk, i32 cx, i32 cz){
+    chunk->cx = cx;
+    chunk->cz = cz;
     for(i32 x = 0; x < CHUNK_WIDTH; x++){
         for(i32 y = 0; y < CHUNK_HEIGHT; y++){
             for(i32 z = 0; z < CHUNK_DEPTH; z++){

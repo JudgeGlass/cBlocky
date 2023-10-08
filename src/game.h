@@ -15,7 +15,7 @@
 
 #include "types.h"
 #include "shader.h"
-#include "chunk.h"
+#include "world.h"
 #include "camera.h"
 
 static void render();

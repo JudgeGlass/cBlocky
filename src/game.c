@@ -11,7 +11,7 @@ SDL_Window *window;
 
 u32 program_id;
 u32 texture_id;
-chunk_t test_chunk;
+world_t world;
 camera_t camera;
 
 void init(){
@@ -21,7 +21,7 @@ void init(){
     load_textures();
     init_camera(&camera, program_id);
 
-    init_chunk(&test_chunk, 0, 0);
+    world_create(6, 6, &world);
 }
 
 void loop(){
@@ -104,11 +104,12 @@ void render(){
     
     glUseProgram(program_id);
 
-    draw_chunk(&test_chunk, texture_id);
+    render_world(&world, texture_id);
     render_camera(&camera, program_id);
 }
 
 void clean(){
+    world_destroy(&world);
     SDL_DestroyWindow(window);
     SDL_Quit();
 }

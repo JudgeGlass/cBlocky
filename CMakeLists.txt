@@ -23,4 +23,6 @@ src/texture.h
 src/texture.c
 src/camera.h
 src/camera.c
+src/world.c
+src/world.h
 )
