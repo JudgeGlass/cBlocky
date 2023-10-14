@@ -27,8 +27,13 @@ u32 load_shader(){
     u32 vertex_shader_id = glCreateShader(GL_VERTEX_SHADER);
     u32 fragment_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
 
+#ifdef __arm__
+    const char* v_source = get_shader_content("res/vertex_es.glsl");
+    const char* f_source = get_shader_content("res/fragment_es.glsl");
+#else
     const char* v_source = get_shader_content("res/vertex.glsl");
     const char* f_source = get_shader_content("res/fragment.glsl");
+#endif
 
     i32 result = GL_FALSE;
     int info_log_length;
