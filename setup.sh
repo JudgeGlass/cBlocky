@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo apt update
-sudo apt install git libsdl2-dev libglew-dev -y
+sudo apt install git cmake libsdl2-dev libglew-dev -y
 
 wget https://raw.githubusercontent.com/nothings/stb/master/stb_image.h
 sudo mv stb_image.h /usr/local/include
