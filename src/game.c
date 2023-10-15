@@ -21,7 +21,7 @@ void init(){
     load_textures();
     init_camera(&camera, program_id);
 
-    world_create(6, 6, &world);
+    world_create(6, 6, &world, &camera);
 }
 
 void loop(){
@@ -30,10 +30,19 @@ void loop(){
     SDL_Event e;
 
     SDL_StartTextInput();
+    
+    //SDL_WarpMouseInWindow(window, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+    // SDL_SetWindowGrab(window, SDL_TRUE);
+    // SDL_SetRelativeMouseMode(SDL_TRUE);
+    SDL_ShowCursor(SDL_DISABLE);
 
     while(!quit){
         while(SDL_PollEvent(&e) != 0){
-            if(e.type == SDL_QUIT || e.key.keysym.sym == SDLK_ESCAPE){
+            if(e.type == SDL_QUIT){
+                quit = true;
+            }
+
+            if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE){
                 quit = true;
             }
 
@@ -106,14 +115,29 @@ void load_textures(){
 }
 
 void render(){
+    i32 start = SDL_GetTicks();
+    i32 startFps = SDL_GetPerformanceCounter(); 
+
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     glClearColor(0.4f, 0.7f, 1.0f, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     glUseProgram(program_id);
 
+    update_world(&world);
+    SDL_WarpMouseInWindow(window, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+
     render_world(&world, texture_id);
     render_camera(&camera, program_id);
+
+    int end = SDL_GetTicks();
+    float elapsedMS = (end - start) / (float) SDL_GetPerformanceFrequency() * 1000.0f;
+    SDL_Delay(13.66666f - elapsedMS);
+    int endFps = SDL_GetPerformanceCounter();
+    u32 fps = 1 / ((endFps - startFps) / (float)SDL_GetPerformanceFrequency());
+    char title[32];
+    sprintf(title, "CBlocky (%d FPS)", fps);
+    SDL_SetWindowTitle(window, title);
 }
 
 void clean(){

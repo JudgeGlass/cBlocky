@@ -18,9 +18,6 @@
 #include "world.h"
 #include "camera.h"
 
-#define WINDOW_WIDTH 1000
-#define WINDOW_HEIGHT 600
-
 static void render();
 static void clean();
 static void load_textures();

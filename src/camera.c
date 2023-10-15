@@ -15,6 +15,11 @@ void init_camera(camera_t *camera, u32 program_id) {
     camera->cam_up[0] = 0.0f;
     camera->cam_up[1] = 1.0f;
     camera->cam_up[2] = 0.0f;
+
+    camera->yaw = -90.0f;
+    camera->pitch = 0.0f;
+    camera->last_x = WINDOW_WIDTH / 2.0f;
+    camera->last_y = WINDOW_HEIGHT / 2.0f;
 }
 
 void render_camera(camera_t *camera, u32 program_id) {
@@ -64,4 +69,44 @@ void move_camera_right(camera_t *camera, f32 amt){
 
 void move_camera_vertical(camera_t *camera, f32 amt){
     camera->position[1] += amt;
+}
+
+void update_camera(camera_t *camera){
+    u32 mouse_x, mouse_y;
+    SDL_GetMouseState(&mouse_x, &mouse_y);
+    
+    f32 x_offset = mouse_x - WINDOW_WIDTH / 2.0f;
+    f32 y_offset = WINDOW_HEIGHT / 2.0f - mouse_y;
+
+    const f32 sensitivity = 0.1f;
+    x_offset *= sensitivity;
+    y_offset *= sensitivity;
+
+    camera->yaw += x_offset;
+    camera->pitch += y_offset;
+
+
+    if(camera->pitch > 89.0f){
+        camera->pitch = 89.0f;
+    }else if(camera->pitch < -89.0f){
+        camera->pitch = -89.0f;
+    }
+
+    if(camera->yaw > 360.0f){
+        camera->yaw = 0.0f;
+    }else if(camera->yaw < 0.0f)
+        camera->yaw = 360.0f;
+    
+    vec3 direction;
+    direction[0] = cos(glm_rad(camera->yaw)) * cos(glm_rad(camera->pitch));
+    direction[1] = sin(glm_rad(camera->pitch));
+    direction[2] = sin(glm_rad(camera->yaw)) * cos(glm_rad(camera->pitch));
+
+    // Used for raycasting later...
+    //vec3 last_pos;
+
+    // TODO: ADD RAYCASTING HERE
+
+    glm_vec3_normalize(direction);
+    glm_vec3_copy(direction, camera->cam_front);
 }

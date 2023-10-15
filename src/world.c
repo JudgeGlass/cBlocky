@@ -1,6 +1,7 @@
 #include "world.h"
 
-void world_create(u32 chunk_amt_width, u32 chunk_amt_depth, world_t *world){
+void world_create(u32 chunk_amt_width, u32 chunk_amt_depth, world_t *world, camera_t *camera){
+    world->camera = camera;
     world->chunks = (chunk_t*) malloc(sizeof(chunk_t) * chunk_amt_width * chunk_amt_depth);
     world->chunk_amt_width = chunk_amt_width;
     world->chunk_amt_depth = chunk_amt_depth;
@@ -23,6 +24,7 @@ void render_world(world_t *world, u32 texture_id){
 }
 
 void update_world(world_t *world){
+    update_camera(world->camera);
     for(u32 i = 0; i < world->chunk_amt_width * world->chunk_amt_depth; i++){
         update_chunk(&world->chunks[i]);
     }

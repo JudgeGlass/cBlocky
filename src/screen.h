@@ -3,6 +3,9 @@
 #ifndef CBLOCKY_SCREEN_H
 #define CBLOCKY_SCREEN_H
 
+#define WINDOW_WIDTH 1000
+#define WINDOW_HEIGHT 600
+
 #include <stdio.h>
 
 #include <SDL2/SDL.h>

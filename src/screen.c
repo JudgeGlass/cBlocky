@@ -8,7 +8,7 @@ SDL_Window* create_window(const char* title, const uint16_t width, const uint16_
         exit(-1);
     }
 
-    SDL_Window *window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL);
+    SDL_Window *window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_GRABBED);
 
     if(window == NULL){
         printf("Failed to create window!\n");
@@ -35,7 +35,7 @@ SDL_Window* create_window(const char* title, const uint16_t width, const uint16_
 }
 
 static SDL_GLContext  create_gl_context(SDL_Window *window){
-#ifdef __arm__
+#if (defined(__arm__) || defined(__arm64__)) && !defined(__APPLE__) 
     printf("ARM DETECTED: Using OpenGL ES 3.1\n");
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
