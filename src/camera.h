@@ -8,6 +8,8 @@
 #include "types.h"
 #include "screen.h"
 
+#define CAMERA_SPEED 32.5f
+
 typedef struct {
     vec3 position;
     vec3 cam_front;

@@ -40,35 +40,34 @@ void render_camera(camera_t *camera, u32 program_id) {
 }
 
 void move_camera_left(camera_t *camera, f32 amt){
-    camera->position[0] -= amt;
+    vec3 left;
+    glm_vec3_cross(camera->cam_front, camera->cam_up, left);
+    glm_vec3_normalize(left);
+    glm_vec3_scale(left, CAMERA_SPEED * amt, left);
+    glm_vec3_sub(camera->position, left, camera->position);
 }
 
 void move_camera_forward(camera_t *camera, f32 amt){
-    // vec3 scale_amt;
-    // vec3 original_cam_front;
-    // glm_vec3_copy(camera->cam_front, original_cam_front);
-    
-    // glm_vec3_scale(camera->cam_front, amt, scale_amt);
-
-    camera->position[2] -= amt;
-
-    //glm_vec3_add(camera->position, scale_amt, camera->position);
+    glm_vec3_scale(camera->cam_front, CAMERA_SPEED * amt, camera->cam_front);
+    glm_vec3_add(camera->position, camera->cam_front, camera->position);
 }
 
 void move_camera_backward(camera_t *camera, f32 amt){
-    // vec3 scale_amt;
-    // glm_vec3_scale(camera->cam_front, -amt, scale_amt);
-
-    // glm_vec3_add(camera->position, scale_amt, camera->position);
-    camera->position[2] += amt;
+    glm_vec3_scale(camera->cam_front, CAMERA_SPEED * amt, camera->cam_front);
+    glm_vec3_sub(camera->position, camera->cam_front, camera->position);
 }
 
 void move_camera_right(camera_t *camera, f32 amt){
-    camera->position[0] -= amt;
+    vec3 right;
+    glm_vec3_cross(camera->cam_front, camera->cam_up, right);
+    glm_vec3_normalize(right);
+    glm_vec3_scale(right, CAMERA_SPEED * amt, right);
+    glm_vec3_add(camera->position, right, camera->position);
 }
 
 void move_camera_vertical(camera_t *camera, f32 amt){
-    camera->position[1] += amt;
+    glm_vec3_scale(camera->cam_up, CAMERA_SPEED * amt, camera->cam_up);
+    glm_vec3_add(camera->position, camera->cam_up, camera->position);
 }
 
 void update_camera(camera_t *camera){

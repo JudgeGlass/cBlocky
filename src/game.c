@@ -11,6 +11,7 @@ SDL_Window *window;
 
 u32 program_id;
 u32 texture_id;
+f64 delta_time;
 world_t world;
 camera_t camera;
 
@@ -47,31 +48,31 @@ void loop(){
             }
 
             if(e.key.keysym.sym == SDLK_a){
-                move_camera_left(&camera, 0.5f);
+                move_camera_left(&camera, delta_time);
                 printf("Camera position: %f, %f, %f\n", camera.position[0], camera.position[1], camera.position[2]);
             }
 
             if(e.key.keysym.sym == SDLK_d){
-                move_camera_right(&camera, -0.5f);
+                move_camera_right(&camera, delta_time);
                 printf("Camera position: %f, %f, %f\n", camera.position[0], camera.position[1], camera.position[2]);
             }
 
             if(e.key.keysym.sym == SDLK_w){
-                move_camera_forward(&camera, 0.5f);
+                move_camera_forward(&camera, delta_time);
                 printf("Camera position: %f, %f, %f\n", camera.position[0], camera.position[1], camera.position[2]);
             }
 
             if(e.key.keysym.sym == SDLK_s){
-                move_camera_backward(&camera, 0.5f);
+                move_camera_backward(&camera, delta_time);
                 printf("Camera position: %f, %f, %f\n", camera.position[0], camera.position[1], camera.position[2]);
             }
 
             if(e.key.keysym.sym == SDLK_SPACE){
-                move_camera_vertical(&camera, 0.5f);
+                move_camera_vertical(&camera, delta_time);
             }
 
             if(e.key.keysym.sym == SDLK_LSHIFT){
-                move_camera_vertical(&camera, -0.5f);
+                move_camera_vertical(&camera, -delta_time);
             }
         }
 
@@ -131,12 +132,13 @@ void render(){
     render_camera(&camera, program_id);
 
     int end = SDL_GetTicks();
-    float elapsedMS = (end - start) / (float) SDL_GetPerformanceFrequency() * 1000.0f;
-    SDL_Delay(13.66666f - elapsedMS);
+    float elapsedMS = (end - start) / (f32) SDL_GetPerformanceFrequency() * 1000.0f;
+    SDL_Delay(8.66666f - elapsedMS);
     int endFps = SDL_GetPerformanceCounter();
-    u32 fps = 1 / ((endFps - startFps) / (float)SDL_GetPerformanceFrequency());
-    char title[32];
-    sprintf(title, "CBlocky (%d FPS)", fps);
+    delta_time = -(f64)((startFps - endFps) / (f32)SDL_GetPerformanceFrequency());
+    u32 fps = 1 / ((endFps - startFps) / (f32)SDL_GetPerformanceFrequency());
+    char title[128];
+    sprintf(title, "CBlocky (%d FPS %f DELTA)", fps, (f32)(delta_time));
     SDL_SetWindowTitle(window, title);
 }
 
