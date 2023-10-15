@@ -159,23 +159,36 @@ block_t *get_block(chunk_t *chunk, u8 x, u8 y, u8 z){
 void init_chunk(chunk_t *chunk, i32 cx, i32 cz){
     chunk->cx = cx;
     chunk->cz = cz;
+
+    struct osn_context *ctx;
+    open_simplex_noise(77374, &ctx);
+
     for(i32 x = 0; x < CHUNK_WIDTH; x++){
         for(i32 y = 0; y < CHUNK_HEIGHT; y++){
             for(i32 z = 0; z < CHUNK_DEPTH; z++){
+                
+                f32 xx = (x+cx*CHUNK_WIDTH + ((f32)rand() / RAND_MAX) / 80);
+                f32 yy = (f32)(z + cz * CHUNK_DEPTH) + ((f32)(rand() / RAND_MAX) / 80);
+                f32 n = fabs(open_simplex_noise2(ctx, xx, yy)) * 12;
+
+                u32 l_start = (u32) n + 120;
+
                 block_t block;
                 init_block(x, y, z, STONE, 0, &block);
 
-                if(y > 64){
-                    //block.id = DIRT;
+                if(y < 20 && y > 15){
                     set_type(&block, AIR);
-                }else if (y == 64){
-                    //block.id = GRASS;
-                    set_type(&block, GRASS);
-                }else if (y < 64 && y > 60){
-                    //block.id = STONE;
-                    set_type(&block, DIRT);
-                }else if(y < 60){
-                    set_type(&block, STONE);
+                }
+
+                if(y < l_start){
+                    if(y == l_start - 1)
+                        set_type(&block, GRASS);
+                    else if(y < l_start - 1 && y > l_start - 5)
+                        set_type(&block, DIRT);
+                    else
+                        set_type(&block, STONE);
+                }else{
+                    set_type(&block, AIR);
                 }
 
                 chunk->blocks[x + y * CHUNK_WIDTH + z * CHUNK_WIDTH * CHUNK_HEIGHT] = block;

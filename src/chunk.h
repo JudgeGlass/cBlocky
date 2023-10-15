@@ -5,6 +5,7 @@
 #define CHUNK_HEIGHT 256
 #define CHUNK_DEPTH 16
 
+#include <stdlib.h>
 #include <GL/glew.h>
 //#include <stb_ds.h>
 
@@ -12,6 +13,7 @@
 #include "block.h"
 #include "mesh.h"
 #include "texture.h"
+#include "open-simplex-noise.h"
 
 typedef struct {
     i32 cx;

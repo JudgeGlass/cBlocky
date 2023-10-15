@@ -5,7 +5,7 @@ void init_camera(camera_t *camera, u32 program_id) {
     glm_vec3_zero(camera->rotation);
 
     camera->position[0] = 5.f;
-    camera->position[1] = 65.0f;
+    camera->position[1] = 130.0f;
     camera->position[2] = 25.0f;
 
     camera->cam_front[0] = 0.f;
@@ -106,4 +106,5 @@ void update_camera(camera_t *camera){
 
     glm_vec3_normalize(direction);
     glm_vec3_copy(direction, camera->cam_front);
+    printf("Yaw: %f, Pitch: %f\n", camera->yaw, camera->pitch);
 }
