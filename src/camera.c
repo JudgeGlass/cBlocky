@@ -18,8 +18,6 @@ void init_camera(camera_t *camera, u32 program_id) {
 
     camera->yaw = -90.0f;
     camera->pitch = 0.0f;
-    camera->last_x = WINDOW_WIDTH / 2.0f;
-    camera->last_y = WINDOW_HEIGHT / 2.0f;
 }
 
 void render_camera(camera_t *camera, u32 program_id) {

@@ -20,8 +20,6 @@ typedef struct {
     mat4 model;
     f32 yaw;
     f32 pitch;
-    f32 last_x;
-    f32 last_y;
 } camera_t;
 
 void init_camera(camera_t *camera, u32 program_id);
