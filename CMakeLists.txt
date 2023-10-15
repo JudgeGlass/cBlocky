@@ -27,4 +27,6 @@ src/camera.h
 src/camera.c
 src/world.c
 src/world.h
+src/open-simplex-noise.c
+src/open-simplex-noise.h
 )
