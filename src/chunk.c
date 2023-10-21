@@ -54,40 +54,43 @@ u8 is_face_visible(i32 x, i32 y, i32 z, chunk_t *chunk, face_t face, u8 id, chun
     i32 cx = chunk->cx;
     i32 cz = chunk->cz;
     
-    if(y < 0 || y > CHUNK_HEIGHT - 1){
+    if(y < 0 || y > CHUNK_HEIGHT){
         return 1;
     }
+
+    //printf("Y: %d\n", y);
+    assert(!(y > CHUNK_HEIGHT || y < 0));
 
     block_t *block = NULL;
     if(x < 0){
         if(cx - 1 >= 0){
-            block = get_block(get_chunk(world_chunks, 6, 6, cx - 1, cz), 15, y, z);
+            block = get_block(get_chunk(world_chunks, 16, 16, cx - 1, cz), 15, y, z);
         }else{
-            return 1;
+            return 0;
         }
-    }else if(x > CHUNK_WIDTH){
+    }else if(x > CHUNK_WIDTH - 1){
         if(cx + 1 < CHUNK_WIDTH){
-            block = get_block(get_chunk(world_chunks, 6, 6, cx + 1, cz), 0, y, z);
+            block = get_block(get_chunk(world_chunks, 16, 16, cx + 1, cz), 0, y, z);
         }else{
-            return 1;
+            return 0;
         }
     }else if(z < 0){
         if(cz - 1 >= 0){
-            block = get_block(get_chunk(world_chunks, 6, 6, cx, cz - 1), x, y, 15);
+            block = get_block(get_chunk(world_chunks, 16, 16, cx, cz - 1), x, y, 15);
         }else{
-            return 1;
+            return 0;
         }
-    }else if(z > CHUNK_DEPTH){
+    }else if(z > CHUNK_DEPTH - 1){
         if(cz + 1 < CHUNK_DEPTH){
-            block = get_block(get_chunk(world_chunks, 6, 6, cx, cz + 1), x, y, 0);
+            block = get_block(get_chunk(world_chunks, 16, 16, cx, cz + 1), x, y, 0);
         }else{
-            return 1;
+            return 0;
         }
     }else{
         block = get_block(chunk, x, y, z);
     }
 
-    if(block == NULL) return 1;
+    if(block == NULL) return 0;
 
     if(get_type(block) == AIR && id == GLASS){
         return 0;
@@ -168,18 +171,14 @@ void init_chunk(chunk_t *chunk, i32 cx, i32 cz){
         for(i32 y = 0; y < CHUNK_HEIGHT; y++){
             for(i32 z = 0; z < CHUNK_DEPTH; z++){
                 
-                f32 xx = (x+cx*CHUNK_WIDTH + ((f32)rand() / RAND_MAX) / 80);
-                f32 yy = (f32)(z + cz * CHUNK_DEPTH) + ((f32)(rand() / RAND_MAX) / 80);
-                f32 n = fabs(open_simplex_noise2(ctx, xx, yy)) * 12;
+                f32 xx = (f32)(x + cx);
+                f32 zz = (f32)(z + cz);
+                f32 n = fabs(open_simplex_noise2(ctx,(float)(x+cx*CHUNK_WIDTH + ((float)rand() / (RAND_MAX))) / 80, (float)(z+cz*CHUNK_DEPTH + ((float)rand() / (RAND_MAX))) / 80) * 12);
 
                 u32 l_start = (u32) n + 120;
 
                 block_t block;
                 init_block(x, y, z, STONE, 0, &block);
-
-                if(y < 20 && y > 15){
-                    set_type(&block, AIR);
-                }
 
                 if(y < l_start){
                     if(y == l_start - 1)

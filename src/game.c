@@ -22,7 +22,7 @@ void init(){
     load_textures();
     init_camera(&camera, program_id);
 
-    world_create(6, 6, &world, &camera);
+    world_create(16, 16, &world, &camera);
 }
 
 void loop(){

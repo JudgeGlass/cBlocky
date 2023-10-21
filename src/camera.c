@@ -106,5 +106,5 @@ void update_camera(camera_t *camera){
 
     glm_vec3_normalize(direction);
     glm_vec3_copy(direction, camera->cam_front);
-    printf("Yaw: %f, Pitch: %f\n", camera->yaw, camera->pitch);
+    //printf("Yaw: %f, Pitch: %f\n", camera->yaw, camera->pitch);
 }
