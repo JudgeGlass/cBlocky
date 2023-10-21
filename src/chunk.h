@@ -6,6 +6,7 @@
 #define CHUNK_DEPTH 16
 
 #include <stdlib.h>
+#include <math.h>
 #include <GL/glew.h>
 //#include <stb_ds.h>
 
@@ -22,15 +23,16 @@ typedef struct {
     mesh_t mesh;
 } chunk_t;
 
-static void create_mesh(chunk_t *chunk);
-static void add_face(u8 x, u8 y, u8 z, chunk_t *chunk, face_t face, u8 id, f32 **vertices, f32 **tex_coords);
-static u8 is_face_visible(u8 x, u8 y, u8 z, chunk_t *chunk, face_t face, u8 id);
+static void add_face(u8 x, u8 y, u8 z, chunk_t *chunk, face_t face, u8 id, f32 **vertices, f32 **tex_coords, chunk_t *world_chunks);
+static u8 is_face_visible(i32 x, i32 y, i32 z, chunk_t *chunk, face_t face, u8 id, chunk_t *world_chunks);
 
 void init_chunk(chunk_t *chunk, i32 cx, i32 cz);
+void create_mesh(chunk_t *chunk, chunk_t *world_chunks);
 void draw_chunk(const chunk_t *chunk, u32 texture_id);
 void update_chunk(chunk_t *chunk);
 void destroy_chunk(chunk_t *chunk);
 
+static chunk_t *get_chunk(chunk_t *chunks, u32 chunk_amt_width, u32 chunk_amt_depth, i32 cx, i32 cz);
 block_t *get_block(chunk_t *chunk, u8 x, u8 y, u8 z);
 
 #endif

@@ -1,6 +1,6 @@
 #include "chunk.h"
 
-void create_mesh(chunk_t *chunk){
+void create_mesh(chunk_t *chunk, chunk_t *world_chunks){
     mesh_t mesh;
     f32 *vertices = NULL;
     f32 *textures = NULL;
@@ -20,13 +20,12 @@ void create_mesh(chunk_t *chunk){
                 }
 
                 u8 id = get_type(&block);
-                add_face(x, y, z, chunk, FRONT, id, &vertices, &textures);
-                add_face(x, y, z, chunk, BACK, id, &vertices, &textures);  
-                add_face(x, y, z, chunk, LEFT, id, &vertices, &textures);
-                add_face(x, y, z, chunk, RIGHT, id, &vertices, &textures);
-                add_face(x, y, z, chunk, TOP, id, &vertices, &textures);
-                add_face(x, y, z, chunk, BOTTOM, id, &vertices, &textures);
-
+                add_face(x, y, z, chunk, FRONT, id, &vertices, &textures, world_chunks);
+                add_face(x, y, z, chunk, BACK, id, &vertices, &textures, world_chunks);  
+                add_face(x, y, z, chunk, LEFT, id, &vertices, &textures, world_chunks);
+                add_face(x, y, z, chunk, RIGHT, id, &vertices, &textures, world_chunks);
+                add_face(x, y, z, chunk, TOP, id, &vertices, &textures, world_chunks);
+                add_face(x, y, z, chunk, BOTTOM, id, &vertices, &textures, world_chunks);
             }
         }
     }
@@ -51,7 +50,7 @@ void create_mesh(chunk_t *chunk){
     arrfree(textures);
 }
 
-u8 is_face_visible(u8 x, u8 y, u8 z, chunk_t *chunk, face_t face, u8 id){
+u8 is_face_visible(i32 x, i32 y, i32 z, chunk_t *chunk, face_t face, u8 id, chunk_t *world_chunks){
     i32 cx = chunk->cx;
     i32 cz = chunk->cz;
     
@@ -62,31 +61,33 @@ u8 is_face_visible(u8 x, u8 y, u8 z, chunk_t *chunk, face_t face, u8 id){
     block_t *block = NULL;
     if(x < 0){
         if(cx - 1 >= 0){
-            return 0;
+            block = get_block(get_chunk(world_chunks, 6, 6, cx - 1, cz), 15, y, z);
         }else{
             return 1;
         }
-    }else if(x > CHUNK_WIDTH - 1){
+    }else if(x > CHUNK_WIDTH){
         if(cx + 1 < CHUNK_WIDTH){
-            return 0;
+            block = get_block(get_chunk(world_chunks, 6, 6, cx + 1, cz), 0, y, z);
         }else{
             return 1;
         }
     }else if(z < 0){
         if(cz - 1 >= 0){
-            return 0;
+            block = get_block(get_chunk(world_chunks, 6, 6, cx, cz - 1), x, y, 15);
         }else{
             return 1;
         }
-    }else if(z > CHUNK_DEPTH - 1){
+    }else if(z > CHUNK_DEPTH){
         if(cz + 1 < CHUNK_DEPTH){
-            return 0;
+            block = get_block(get_chunk(world_chunks, 6, 6, cx, cz + 1), x, y, 0);
         }else{
             return 1;
         }
     }else{
         block = get_block(chunk, x, y, z);
     }
+
+    if(block == NULL) return 1;
 
     if(get_type(block) == AIR && id == GLASS){
         return 0;
@@ -105,7 +106,7 @@ u8 is_face_visible(u8 x, u8 y, u8 z, chunk_t *chunk, face_t face, u8 id){
     return 1;
 }
 
-void add_face(u8 x, u8 y, u8 z, chunk_t *chunk, face_t face, u8 id, f32 **vertices, f32 **tex_coords){
+void add_face(u8 x, u8 y, u8 z, chunk_t *chunk, face_t face, u8 id, f32 **vertices, f32 **tex_coords, chunk_t *world_chunks){
     i32 cx = chunk->cx;
     i32 cz = chunk->cz;
     i32 xx = x, yy = y, zz = z;
@@ -142,7 +143,7 @@ void add_face(u8 x, u8 y, u8 z, chunk_t *chunk, face_t face, u8 id, f32 **vertic
         break;
     }
 
-    if(is_face_visible(xx, yy, zz, chunk, face, id) && id != AIR){
+    if(is_face_visible(xx, yy, zz, chunk, face, id, world_chunks) && id != AIR){
         for(int i = 0; i < 18; i+=3){
             arrpush(*vertices, current_face[i] + x + cx * CHUNK_WIDTH);
             arrpush(*vertices, current_face[i + 1] + y);
@@ -196,7 +197,15 @@ void init_chunk(chunk_t *chunk, i32 cx, i32 cz){
         }
     }
 
-    create_mesh(chunk);
+    
+}
+
+chunk_t *get_chunk(chunk_t *chunks, u32 chunk_amt_width, u32 chunk_amt_depth, i32 cx, i32 cz){
+    if(cx < 0 || cz < 0 || cx >= chunk_amt_width || cz >= chunk_amt_depth){
+        return NULL;
+    }
+
+    return &chunks[cx + cz * chunk_amt_width];
 }
 
 void draw_chunk(const chunk_t *chunk, u32 texture_id){

@@ -11,6 +11,14 @@ void world_create(u32 chunk_amt_width, u32 chunk_amt_depth, world_t *world, came
             init_chunk(&world->chunks[w + chunk_amt_width * d], w, d);
         }
     }
+
+    for(u32 w = 0; w < chunk_amt_width; w++){
+        for(u32 d = 0; d < chunk_amt_depth; d++){
+            create_mesh(&world->chunks[w + chunk_amt_width * d], world->chunks);
+        }
+    }
+
+    
 }
 
 void world_destroy(world_t *world){
