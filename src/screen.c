@@ -51,7 +51,7 @@ static SDL_GLContext  create_gl_context(SDL_Window *window){
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,4);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     // enable double buffering (should be on by default)
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 16);
     return SDL_GL_CreateContext(window);
 }
 

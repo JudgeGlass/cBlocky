@@ -26,6 +26,7 @@ typedef struct {
 
 static void add_face(u8 x, u8 y, u8 z, chunk_t *chunk, face_t face, u8 id, f32 **vertices, f32 **tex_coords, chunk_t *world_chunks);
 static u8 is_face_visible(i32 x, i32 y, i32 z, chunk_t *chunk, face_t face, u8 id, chunk_t *world_chunks);
+static void create_tree(chunk_t *chunk, i32 x, i32 y, i32 z);
 
 void init_chunk(chunk_t *chunk, i32 cx, i32 cz);
 void create_mesh(chunk_t *chunk, chunk_t *world_chunks);

@@ -92,14 +92,11 @@ u8 is_face_visible(i32 x, i32 y, i32 z, chunk_t *chunk, face_t face, u8 id, chun
 
     if(block == NULL) return 0;
 
-    if(get_type(block) == AIR && id == GLASS){
-        return 0;
-    }
-
     switch (get_type(block))
     {
     case AIR:
     case GLASS:
+    case OAK_LEAVES:
         return 1;
     
     default:
@@ -169,8 +166,7 @@ void init_chunk(chunk_t *chunk, i32 cx, i32 cz){
 
     for(i32 x = 0; x < CHUNK_WIDTH; x++){
         for(i32 y = 0; y < CHUNK_HEIGHT; y++){
-            for(i32 z = 0; z < CHUNK_DEPTH; z++){
-                
+            for(i32 z = 0; z < CHUNK_DEPTH; z++){                
                 f32 xx = (f32)(x + cx);
                 f32 zz = (f32)(z + cz);
                 f32 n = fabs(open_simplex_noise2(ctx,(float)(x+cx*CHUNK_WIDTH + ((float)rand() / (RAND_MAX))) / 80, (float)(z+cz*CHUNK_DEPTH + ((float)rand() / (RAND_MAX))) / 80) * 12);
@@ -196,6 +192,17 @@ void init_chunk(chunk_t *chunk, i32 cx, i32 cz){
         }
     }
 
+    for(i32 x = 0; x < CHUNK_WIDTH; x++){
+        for(i32 y = 0; y < CHUNK_HEIGHT; y++){
+            for(i32 z = 0; z < CHUNK_DEPTH; z++){
+                if(get_type(get_block(chunk, x, y, z)) != GRASS) continue;
+                
+                if(rand() % 100 < 5)
+                    create_tree(chunk, x, y+1, z);
+            }
+        }
+    }
+
     
 }
 
@@ -205,6 +212,27 @@ chunk_t *get_chunk(chunk_t *chunks, u32 chunk_amt_width, u32 chunk_amt_depth, i3
     }
 
     return &chunks[cx + cz * chunk_amt_width];
+}
+
+static void create_tree(chunk_t *chunk, i32 x, i32 y, i32 z){
+    if(y > CHUNK_HEIGHT - 5 || x < 5 || x > 11 || z < 5 || z > 11) return;
+    set_type(get_block(chunk, x, y, z), OAK_LOG);
+    set_type(get_block(chunk, x, y + 1, z), OAK_LOG);
+    set_type(get_block(chunk, x, y + 2, z), OAK_LOG);
+    set_type(get_block(chunk, x, y + 3, z), OAK_LOG);
+    for(int xx = -2; xx < 3; xx++){
+        for(int zz = -2; zz < 3; zz++){
+            if(xx == 0 && zz == 0) continue;
+            set_type(get_block(chunk, x + xx, y + 3, z + zz), OAK_LEAVES);
+            set_type(get_block(chunk, x + xx, y + 4, z + zz), OAK_LEAVES);
+        }
+    }
+
+    for(int xx = -1; xx < 2; xx++){
+        for(int zz = -1; zz < 2; zz++){
+            set_type(get_block(chunk, x + xx, y + 5, z + zz), OAK_LEAVES);
+        }
+    }
 }
 
 void draw_chunk(const chunk_t *chunk, u32 texture_id){

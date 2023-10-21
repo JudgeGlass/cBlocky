@@ -27,7 +27,17 @@ void world_destroy(world_t *world){
 
 void render_world(world_t *world, u32 texture_id){
     for(u32 i = 0; i < world->chunk_amt_width * world->chunk_amt_depth; i++){
-        draw_chunk(&world->chunks[i], texture_id);
+        f32 cam_x = world->camera->position[0];
+        f32 cam_z = world->camera->position[2];
+        vec2 player_2d_pos = {cam_x, cam_z};
+
+        chunk_t *chunk = &world->chunks[i];
+        vec2 chunk_2d_pos = {chunk->cx * CHUNK_WIDTH, chunk->cz * CHUNK_DEPTH};
+
+        if(glm_vec2_distance(player_2d_pos, chunk_2d_pos) < 128.0f){
+            draw_chunk(chunk, texture_id);
+        }
+        
     }
 }
 

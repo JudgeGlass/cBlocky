@@ -7,6 +7,8 @@
 #define DIRT 1
 #define GRASS 2
 #define STONE 3
+#define OAK_LOG 4
+#define OAK_LEAVES 5
 #define GLASS 15
 
 typedef struct {

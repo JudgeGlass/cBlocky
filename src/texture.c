@@ -46,6 +46,12 @@ void add_texture_face(const u8 block_id, face_t face, f32 **texture_coords){
         case GLASS:
             arrpush(*texture_coords, texture_uv_glass[i]);
             break;
+        case OAK_LOG:
+            arrpush(*texture_coords, texture_uv_oak_log[i]);
+            break;
+        case OAK_LEAVES:
+            arrpush(*texture_coords, texture_uv_oak_leaves[i]);
+            break;
         default:
             return;
         }
