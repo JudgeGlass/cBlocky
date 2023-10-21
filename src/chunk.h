@@ -9,7 +9,6 @@
 #include <math.h>
 #include <assert.h>
 #include <GL/glew.h>
-//#include <stb_ds.h>
 
 #include "types.h"
 #include "block.h"
@@ -33,8 +32,9 @@ void create_mesh(chunk_t *chunk, chunk_t *world_chunks);
 void draw_chunk(const chunk_t *chunk, u32 texture_id);
 void update_chunk(chunk_t *chunk);
 void destroy_chunk(chunk_t *chunk);
+void set_block(chunk_t *chunk, u8 x, u8 y, u8 z, u8 type);
 
-static chunk_t *get_chunk(chunk_t *chunks, u32 chunk_amt_width, u32 chunk_amt_depth, i32 cx, i32 cz);
+chunk_t *get_chunk(chunk_t *chunks, u32 chunk_amt_width, u32 chunk_amt_depth, i32 cx, i32 cz);
 block_t *get_block(chunk_t *chunk, u8 x, u8 y, u8 z);
 
 #endif

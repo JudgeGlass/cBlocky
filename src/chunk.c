@@ -157,6 +157,11 @@ block_t *get_block(chunk_t *chunk, u8 x, u8 y, u8 z){
     return &chunk->blocks[x + y * CHUNK_WIDTH + z * CHUNK_WIDTH * CHUNK_HEIGHT];
 }
 
+void set_block(chunk_t *chunk, u8 x, u8 y, u8 z, u8 type){
+    block_t *block = get_block(chunk, x, y, z);
+    set_type(block, type);
+}
+
 void init_chunk(chunk_t *chunk, i32 cx, i32 cz){
     chunk->cx = cx;
     chunk->cz = cz;

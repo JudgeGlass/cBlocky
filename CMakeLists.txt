@@ -29,4 +29,6 @@ src/world.c
 src/world.h
 src/open-simplex-noise.c
 src/open-simplex-noise.h
+src/ray.c
+src/ray.h
 )

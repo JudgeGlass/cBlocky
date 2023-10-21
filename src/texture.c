@@ -1,5 +1,11 @@
 #include "texture.h"
 
+f32* get_texture_uvs(const u8 block_id, texture_t texture){
+    f32 texture_coords[72];
+
+    
+}
+
 void add_texture_face(const u8 block_id, face_t face, f32 **texture_coords){
     if(block_id == AIR) return;
 

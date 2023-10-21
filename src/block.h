@@ -12,10 +12,6 @@
 #define GLASS 15
 
 typedef struct {
-    // u8 id;
-    // u8 x;
-    // u8 y;
-    // u8 z;
     u32 data;
 } block_t;
 

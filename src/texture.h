@@ -2,6 +2,7 @@
 #define __TEXTURE_H__
 
 #include <GL/glew.h>
+#include <cglm/cglm.h>
 
 #ifndef STB_DS_IMPLEMENTATION
 #include <stb_ds.h>
@@ -262,6 +263,17 @@ static const f32 texture_uv_dirt[] = {
     4.0f/16.0f, 0.0f,
     3.0f/16.0f, 0.0f
 };
+
+typedef struct {
+    vec2 uv_right_face;
+    vec2 uv_left_face;
+    vec2 uv_top_face;
+    vec2 uv_bottom_face;
+    vec2 uv_front_face;
+    vec2 uv_back_face;
+} texture_t;
+
+f32* get_texture_uvs(const u8 block_id, texture_t texture);
 
 void add_texture_face(const u8 block_id, face_t face, f32 **texture_coords);
 

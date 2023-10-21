@@ -1,11 +1,4 @@
-
-
-#include <stdbool.h>
-
 #include "game.h"
-#include "screen.h"
-
-#include <GL/glew.h>
 
 SDL_Window *window;
 
@@ -14,9 +7,14 @@ u32 texture_id;
 f64 delta_time;
 world_t world;
 camera_t camera;
+game_states_t game_states;
 
 void init(){
     window = create_window("CBlocky", WINDOW_WIDTH, WINDOW_HEIGHT);
+    game_states.game_event_state = PLAYING;
+    game_states.mouse_state.mouse_b1_pressed = false;
+    game_states.mouse_state.mouse_b2_pressed = false;
+    game_states.mouse_state.click_sleep = 0.0f;
 
     program_id = load_shader();
     load_textures();
@@ -32,39 +30,41 @@ void loop(){
 
     SDL_StartTextInput();
     
-    //SDL_WarpMouseInWindow(window, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
-    // SDL_SetWindowGrab(window, SDL_TRUE);
-    // SDL_SetRelativeMouseMode(SDL_TRUE);
     SDL_ShowCursor(SDL_DISABLE);
 
     while(!quit){
+        game_states.mouse_state.click_sleep += delta_time;
         while(SDL_PollEvent(&e) != 0){
             if(e.type == SDL_QUIT){
                 quit = true;
             }
 
             if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE){
-                quit = true;
+                if(game_states.game_event_state = PAUSE){
+                    game_states.game_event_state = PLAYING;
+                    SDL_ShowCursor(SDL_DISABLE);
+                    SDL_SetWindowGrab(window, SDL_TRUE);
+                }else{
+                    game_states.game_event_state = PAUSE;
+                    SDL_ShowCursor(SDL_ENABLE);
+                    SDL_SetWindowGrab(window, SDL_FALSE);
+                }
             }
 
             if(e.key.keysym.sym == SDLK_a){
                 move_camera_left(&camera, delta_time);
-                printf("Camera position: %f, %f, %f\n", camera.position[0], camera.position[1], camera.position[2]);
             }
 
             if(e.key.keysym.sym == SDLK_d){
                 move_camera_right(&camera, delta_time);
-                printf("Camera position: %f, %f, %f\n", camera.position[0], camera.position[1], camera.position[2]);
             }
 
             if(e.key.keysym.sym == SDLK_w){
                 move_camera_forward(&camera, delta_time);
-                printf("Camera position: %f, %f, %f\n", camera.position[0], camera.position[1], camera.position[2]);
             }
 
             if(e.key.keysym.sym == SDLK_s){
                 move_camera_backward(&camera, delta_time);
-                printf("Camera position: %f, %f, %f\n", camera.position[0], camera.position[1], camera.position[2]);
             }
 
             if(e.key.keysym.sym == SDLK_SPACE){
@@ -74,10 +74,24 @@ void loop(){
             if(e.key.keysym.sym == SDLK_LSHIFT){
                 move_camera_vertical(&camera, -delta_time);
             }
+
+            if(e.type == SDL_MOUSEBUTTONDOWN){
+                if(e.button.button == SDL_BUTTON_LEFT && game_states.mouse_state.click_sleep > 0.8f){
+                    game_states.mouse_state.mouse_b1_pressed = true;
+                }
+
+                if(e.button.button == SDL_BUTTON_RIGHT && game_states.mouse_state.click_sleep > 0.8f){
+                    game_states.mouse_state.mouse_b2_pressed = true;
+                }
+            }
         }
 
-        render();
+        if(game_states.game_event_state == PLAYING)
+            update();
 
+        render();
+        game_states.mouse_state.mouse_b1_pressed = false;
+        game_states.mouse_state.mouse_b2_pressed = false;
         SDL_GL_SwapWindow(window);
     }
 
@@ -122,14 +136,11 @@ void render(){
     i32 startFps = SDL_GetPerformanceCounter(); 
 
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-    glClearColor(0.4f, 0.7f, 1.0f, 1);
-    //glClearColor(0.0f, 0.0f, 0.0f, 1);
+    //glClearColor(0.4f, 0.7f, 1.0f, 1);
+    glClearColor(0.0f, 0.0f, 0.0f, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     glUseProgram(program_id);
-
-    update_world(&world);
-    SDL_WarpMouseInWindow(window, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 
     render_world(&world, texture_id);
     render_camera(&camera, program_id);
@@ -143,6 +154,11 @@ void render(){
     char title[128];
     sprintf(title, "CBlocky (%d FPS %f DELTA)", fps, (f32)(delta_time));
     SDL_SetWindowTitle(window, title);
+}
+
+void update(){
+    update_world(&world, &game_states);
+    SDL_WarpMouseInWindow(window, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 }
 
 void clean(){

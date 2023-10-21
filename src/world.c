@@ -41,9 +41,48 @@ void render_world(world_t *world, u32 texture_id){
     }
 }
 
-void update_world(world_t *world){
+void update_world(world_t *world, game_states_t *game_states){
     update_camera(world->camera);
     for(u32 i = 0; i < world->chunk_amt_width * world->chunk_amt_depth; i++){
         update_chunk(&world->chunks[i]);
     }
+
+
+    f32 yaw = world->camera->yaw;
+    f32 pitch = world->camera->pitch;
+    vec3 cam_pos = {world->camera->position[0], world->camera->position[1] + 0.5f, world->camera->position[2]};
+    ray_t ray;
+    init_ray(&ray, cam_pos, yaw, pitch);
+
+    for(; ray_length(&ray) < 6; ray_step(&ray, 0.05f)){
+        f32 x = ray_end(&ray)[0];
+        f32 y = ray_end(&ray)[1];
+        f32 z = ray_end(&ray)[2];
+
+        i32 cx = (i32) x / 16;
+        i32 cz = (i32) z / 16;
+
+        if(cx < 0 || cz < 0 || cx > 15 || cz > 15) break;
+
+        int xx = (int) x % 16;
+        int yy = (int) y;
+        int zz = (int) z % 16;
+
+        block_t *block = get_block(get_chunk(world->chunks, world->chunk_amt_width, world->chunk_amt_depth, cx, cz), (u8) x % 16, (u8) y, (u8) z % 16);
+        
+        if(get_type(block) != AIR){
+            if(game_states->mouse_state.mouse_b1_pressed){
+                set_block(get_chunk(world->chunks, world->chunk_amt_width, world->chunk_amt_depth, cx, cz), (u8) x % 16, (u8) y, (u8) z % 16, AIR);               
+                create_mesh(get_chunk(world->chunks, world->chunk_amt_width, world->chunk_amt_depth, cx, cz), world->chunks);
+                game_states->mouse_state.click_sleep = 0.0f;
+            }
+
+            if(game_states->mouse_state.mouse_b2_pressed){
+                set_block(get_chunk(world->chunks, world->chunk_amt_width, world->chunk_amt_depth, cx, cz), (u8) x % 16, (u8) y + 1, (u8) z % 16, GRASS);               
+                create_mesh(get_chunk(world->chunks, world->chunk_amt_width, world->chunk_amt_depth, cx, cz), world->chunks);
+                game_states->mouse_state.click_sleep = 0.0f;
+            }
+        }
+    }
+
 }
