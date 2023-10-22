@@ -3,9 +3,9 @@ project(cBlocky C)
 
 set(CMAKE_C_STANDARD 11)
 
-include_directories("/usr/local/include" "/opt/homebrew/include/" "/opt/homebrew/include/")
-link_directories("/usr/local/lib" "/opt/homebrew/lib/" "/opt/homebrew/lib/")
-LINK_LIBRARIES(SDL2main SDL2 GLEW "-framework OpenGL")
+#include_directories("/usr/local/include" "/opt/homebrew/include/" "/opt/homebrew/include/")
+#link_directories("/usr/local/lib" "/opt/homebrew/lib/" "/opt/homebrew/lib/")
+LINK_LIBRARIES(SDL2main SDL2 GLEW GL GLU -lm)
 
 add_executable(cBlocky 
 src/main.c 
