@@ -72,7 +72,7 @@ u8 is_face_visible(i32 x, i32 y, i32 z, chunk_t *chunk, face_t face, u8 id, chun
     }
     else if (x > CHUNK_WIDTH - 1)
     {
-        if (cx + 1 < CHUNK_WIDTH)
+        if (cx + 1 < CHUNK_WIDTH - 1)
         {
             block = get_block(get_chunk(world_chunks, 64, 64, cx + 1, cz), 0, y, z);
         }
@@ -94,7 +94,7 @@ u8 is_face_visible(i32 x, i32 y, i32 z, chunk_t *chunk, face_t face, u8 id, chun
     }
     else if (z > CHUNK_DEPTH - 1)
     {
-        if (cz + 1 < CHUNK_DEPTH)
+        if (cz + 1 < CHUNK_DEPTH - 1)
         {
             block = get_block(get_chunk(world_chunks, 64, 64, cx, cz + 1), x, y, 0);
         }
@@ -209,7 +209,11 @@ void init_chunk(chunk_t *chunk, i32 cx, i32 cz, struct osn_context *ctx)
                 if (y < l_start)
                 {
                     if (y == l_start - 1)
+                    {
                         set_type(block, GRASS);
+                        if (x == 0 || x == 15 || z == 0 || z == 15)
+                            set_type(block, DIRT);
+                    }
                     else if (y < l_start - 1 && y > l_start - 5)
                         set_type(block, DIRT);
                     else
