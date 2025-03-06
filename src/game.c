@@ -9,7 +9,8 @@ world_t world;
 camera_t camera;
 game_states_t game_states;
 
-void init(){
+void init()
+{
     window = create_window("CBlocky", WINDOW_WIDTH, WINDOW_HEIGHT);
     game_states.game_event_state = PLAYING;
     game_states.mouse_state.mouse_b1_pressed = false;
@@ -20,73 +21,90 @@ void init(){
     load_textures();
     init_camera(&camera, program_id);
 
-    world_create(16, 16, &world, &camera);
+    world_create(32, 32, &world, &camera);
 }
 
-void loop(){
+void loop()
+{
     bool quit = false;
 
     SDL_Event e;
 
     SDL_StartTextInput();
-    
+
     SDL_ShowCursor(SDL_DISABLE);
 
-    while(!quit){
+    while (!quit)
+    {
         game_states.mouse_state.click_sleep += delta_time;
-        while(SDL_PollEvent(&e) != 0){
-            if(e.type == SDL_QUIT){
+        while (SDL_PollEvent(&e) != 0)
+        {
+            if (e.type == SDL_QUIT)
+            {
                 quit = true;
             }
 
-            if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE){
-                if(game_states.game_event_state = PAUSE){
+            if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
+            {
+                if (game_states.game_event_state = PAUSE)
+                {
                     game_states.game_event_state = PLAYING;
                     SDL_ShowCursor(SDL_DISABLE);
                     SDL_SetWindowGrab(window, SDL_TRUE);
-                }else{
+                }
+                else
+                {
                     game_states.game_event_state = PAUSE;
                     SDL_ShowCursor(SDL_ENABLE);
                     SDL_SetWindowGrab(window, SDL_FALSE);
                 }
             }
 
-            if(e.key.keysym.sym == SDLK_a){
+            if (e.key.keysym.sym == SDLK_a)
+            {
                 move_camera_left(&camera, delta_time);
             }
 
-            if(e.key.keysym.sym == SDLK_d){
+            if (e.key.keysym.sym == SDLK_d)
+            {
                 move_camera_right(&camera, delta_time);
             }
 
-            if(e.key.keysym.sym == SDLK_w){
+            if (e.key.keysym.sym == SDLK_w)
+            {
                 move_camera_forward(&camera, delta_time);
             }
 
-            if(e.key.keysym.sym == SDLK_s){
+            if (e.key.keysym.sym == SDLK_s)
+            {
                 move_camera_backward(&camera, delta_time);
             }
 
-            if(e.key.keysym.sym == SDLK_SPACE){
+            if (e.key.keysym.sym == SDLK_SPACE)
+            {
                 move_camera_vertical(&camera, delta_time);
             }
 
-            if(e.key.keysym.sym == SDLK_LSHIFT){
+            if (e.key.keysym.sym == SDLK_LSHIFT)
+            {
                 move_camera_vertical(&camera, -delta_time);
             }
 
-            if(e.type == SDL_MOUSEBUTTONDOWN){
-                if(e.button.button == SDL_BUTTON_LEFT && game_states.mouse_state.click_sleep > 0.8f){
+            if (e.type == SDL_MOUSEBUTTONDOWN)
+            {
+                if (e.button.button == SDL_BUTTON_LEFT && game_states.mouse_state.click_sleep > 0.8f)
+                {
                     game_states.mouse_state.mouse_b1_pressed = true;
                 }
 
-                if(e.button.button == SDL_BUTTON_RIGHT && game_states.mouse_state.click_sleep > 0.8f){
+                if (e.button.button == SDL_BUTTON_RIGHT && game_states.mouse_state.click_sleep > 0.8f)
+                {
                     game_states.mouse_state.mouse_b2_pressed = true;
                 }
             }
         }
 
-        if(game_states.game_event_state == PLAYING)
+        if (game_states.game_event_state == PLAYING)
             update();
 
         render();
@@ -98,30 +116,32 @@ void loop(){
     clean();
 }
 
-void load_textures(){
+void load_textures()
+{
     i32 width, height, nrChannels;
-    u8 *data = stbi_load("res/atlas.png", &width, &height, &nrChannels, 0);
-    if(!data){
+    u8 *data = stbi_load("../res/atlas.png", &width, &height, &nrChannels, 0);
+    if (!data)
+    {
         printf("Failed to load texture!\n");
         exit(-1);
     }
 
     glActiveTexture(GL_TEXTURE0);
 
-    glGenTextures(1, &texture_id);    
+    glGenTextures(1, &texture_id);
     glBindTexture(GL_TEXTURE_2D, texture_id);
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_MULTISAMPLE);
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LOD, 7);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 7);
-    // GLfloat anisotropy;
-    // glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &anisotropy);
-    // glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropy);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 7);
+    //  GLfloat anisotropy;
+    //  glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &anisotropy);
+    //  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropy);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
@@ -133,22 +153,23 @@ void load_textures(){
     glEnable(GL_DEPTH_TEST);
 }
 
-void render(){
+void render()
+{
     i32 start = SDL_GetTicks();
-    i32 startFps = SDL_GetPerformanceCounter(); 
+    i32 startFps = SDL_GetPerformanceCounter();
 
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-    //glClearColor(0.4f, 0.7f, 1.0f, 1);
+    // glClearColor(0.4f, 0.7f, 1.0f, 1);
     glClearColor(0.0f, 0.0f, 0.0f, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+
     glUseProgram(program_id);
 
     render_world(&world, texture_id);
     render_camera(&camera, program_id);
 
     int end = SDL_GetTicks();
-    float elapsedMS = (end - start) / (f32) SDL_GetPerformanceFrequency() * 1000.0f;
+    float elapsedMS = (end - start) / (f32)SDL_GetPerformanceFrequency() * 1000.0f;
     SDL_Delay(8.66666f - elapsedMS);
     int endFps = SDL_GetPerformanceCounter();
     delta_time = -(f64)((startFps - endFps) / (f32)SDL_GetPerformanceFrequency());
@@ -158,12 +179,14 @@ void render(){
     SDL_SetWindowTitle(window, title);
 }
 
-void update(){
+void update()
+{
     update_world(&world, &game_states);
     SDL_WarpMouseInWindow(window, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 }
 
-void clean(){
+void clean()
+{
     world_destroy(&world);
     SDL_DestroyWindow(window);
     SDL_Quit();

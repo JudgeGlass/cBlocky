@@ -3,10 +3,11 @@
 #include <assert.h>
 #include "shader.h"
 
-char* get_shader_content(const char* filename){
+char *get_shader_content(const char *filename)
+{
     FILE *fp;
     i64 size = 0;
-    char* shader_content;
+    char *shader_content;
 
     fp = fopen(filename, "rb");
     assert(fp);
@@ -23,16 +24,17 @@ char* get_shader_content(const char* filename){
     return shader_content;
 }
 
-u32 load_shader(){
+u32 load_shader()
+{
     u32 vertex_shader_id = glCreateShader(GL_VERTEX_SHADER);
     u32 fragment_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
 
 #ifdef __arm__
-    const char* v_source = get_shader_content("res/vertex_es.glsl");
-    const char* f_source = get_shader_content("res/fragment_es.glsl");
+    const char *v_source = get_shader_content("res/vertex_es.glsl");
+    const char *f_source = get_shader_content("res/fragment_es.glsl");
 #else
-    const char* v_source = get_shader_content("res/vertex.glsl");
-    const char* f_source = get_shader_content("res/fragment.glsl");
+    const char *v_source = get_shader_content("../res/vertex.glsl");
+    const char *f_source = get_shader_content("../res/fragment.glsl");
 #endif
 
     i32 result = GL_FALSE;
@@ -44,8 +46,9 @@ u32 load_shader(){
 
     glGetShaderiv(vertex_shader_id, GL_COMPILE_STATUS, &result);
     glGetShaderiv(vertex_shader_id, GL_INFO_LOG_LENGTH, &info_log_length);
-    if(info_log_length > 0){
-        i8* info_log = malloc(sizeof(char) * info_log_length + 1);
+    if (info_log_length > 0)
+    {
+        i8 *info_log = malloc(sizeof(char) * info_log_length + 1);
         glGetShaderInfoLog(vertex_shader_id, info_log_length, NULL, info_log);
         printf("ERROR: %s\n", info_log);
     }
@@ -56,8 +59,9 @@ u32 load_shader(){
 
     glGetShaderiv(fragment_shader_id, GL_COMPILE_STATUS, &result);
     glGetShaderiv(fragment_shader_id, GL_INFO_LOG_LENGTH, &info_log_length);
-    if(info_log_length > 0){
-        i8* info_log = malloc(sizeof(char) * info_log_length + 1);
+    if (info_log_length > 0)
+    {
+        i8 *info_log = malloc(sizeof(char) * info_log_length + 1);
         glGetShaderInfoLog(fragment_shader_id, info_log_length, NULL, info_log);
         printf("ERROR: %s\n", info_log);
     }
