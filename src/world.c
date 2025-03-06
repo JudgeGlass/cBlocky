@@ -49,7 +49,24 @@ void world_create(u32 chunk_amt_width, u32 chunk_amt_depth, world_t *world, came
     int threads_left = p_cores;
     for (int i = 0; i < p_cores; i++)
     {
-        printf("Threads remaining: %d\n", threads_left);
+        printf("Threads remaining (chunk gen): %d\n", threads_left);
+        pthread_join(thread_ids[i], NULL);
+        threads_left--;
+    }
+
+    for (int i = 0; i < p_cores; i++)
+    {
+        if (pthread_create(&thread_ids[i], NULL, thread_gen_chunk_mesh, (void *)&info[i]) != 0)
+        {
+            printf("FAILED TO CREATE THREAD!\n");
+            exit(-1);
+        }
+    }
+
+    threads_left = p_cores;
+    for (int i = 0; i < p_cores; i++)
+    {
+        printf("Threads remaining (mesh gen): %d\n", threads_left);
         pthread_join(thread_ids[i], NULL);
         for (int j = 0; j < (info[i].end - info[i].start); j++)
         {
@@ -94,7 +111,12 @@ void *thread_gen_chunk(void *sew)
         int d = i / 64;
         init_chunk(&info->world->chunks[w + 64 * d], w, d, ctx);
     }
+    return NULL;
+}
 
+void *thread_gen_chunk_mesh(void *sew)
+{
+    thread_gen_chunk_t *info = (thread_gen_chunk_t *)sew;
     chunk_mesh_t *chunk_meshes = (chunk_mesh_t *)malloc(sizeof(chunk_mesh_t) * (info->end - info->start));
     for (int i = info->start; i < info->end; i++)
     {
@@ -105,7 +127,6 @@ void *thread_gen_chunk(void *sew)
     }
 
     info->chunk_mesh = chunk_meshes;
-    return NULL;
 }
 
 void world_destroy(world_t *world)

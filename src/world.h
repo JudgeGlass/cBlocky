@@ -38,5 +38,6 @@ void render_world(world_t *world, u32 texture_id);
 void update_world(world_t *world, game_states_t *game_states);
 
 static void *thread_gen_chunk(void *sew);
+static void *thread_gen_chunk_mesh(void *sew);
 
 #endif
