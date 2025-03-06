@@ -8,15 +8,7 @@ void world_create(u32 chunk_amt_width, u32 chunk_amt_depth, world_t *world, came
     world->chunk_amt_depth = chunk_amt_depth;
     open_simplex_noise(77374, &ctx);
 
-    // for (u32 w = 0; w < chunk_amt_width; w++)
-    // {
-    //     for (u32 d = 0; d < chunk_amt_depth; d++)
-    //     {
-    //         init_chunk(&world->chunks[w + chunk_amt_width * d], w, d);
-    //     }
-    // }
-
-    int p_cores = 4;
+    int p_cores = 8;
     pthread_t thread_ids[p_cores];
     thread_gen_chunk_t info[p_cores];
 
@@ -36,7 +28,6 @@ void world_create(u32 chunk_amt_width, u32 chunk_amt_depth, world_t *world, came
             my_last_i += r;
         }
 
-        // printf("core %d: my_first_i = %d, my_last_i = %d\n", core, my_first_i, my_last_i);
         info[core].start = my_first_i;
         info[core].end = my_last_i;
         info[core].world = world;
@@ -81,46 +72,36 @@ void world_create(u32 chunk_amt_width, u32 chunk_amt_depth, world_t *world, came
             glBufferData(GL_ARRAY_BUFFER, sizeof(f32) * size_tex, textures, GL_STATIC_DRAW);
 
             glBindVertexArray(0);
+            info[i].chunk_mesh[j].chunk->mesh = mesh;
             arrfree(vertices);
             arrfree(textures);
         }
         threads_left--;
+        free(info[i].chunk_mesh);
     }
 
     time(&end);
 
     printf("Chunk gen done! %.2f second(s)\n", difftime(end, start));
-
-    // for (u32 w = 0; w < chunk_amt_width; w++)
-    // {
-    //     for (u32 d = 0; d < chunk_amt_depth; d++)
-    //     {
-    //         create_mesh(&world->chunks[w + chunk_amt_width * d], world->chunks);
-    //     }
-    // }
-
-    printf("Chunk mesh done!\n");
 }
 
 void *thread_gen_chunk(void *sew)
 {
     thread_gen_chunk_t *info = (thread_gen_chunk_t *)sew;
-    // printf("Start: %d  End: %d\n", info->start, info->end);
     for (int i = info->start; i < info->end; i++)
     {
-        int w = i % 32;
-        int d = i / 32;
-        // printf("I: %d E: %d\n", i, info->end);
-        init_chunk(&info->world->chunks[w + 32 * d], w, d, ctx);
+        int w = i % 64;
+        int d = i / 64;
+        init_chunk(&info->world->chunks[w + 64 * d], w, d, ctx);
     }
 
     chunk_mesh_t *chunk_meshes = (chunk_mesh_t *)malloc(sizeof(chunk_mesh_t) * (info->end - info->start));
     for (int i = info->start; i < info->end; i++)
     {
-        int w = i % 32;
-        int d = i / 32;
-        // printf("I: %d E: %d\n", i, info->end);
-        chunk_meshes[i - info->start] = create_mesh(&info->world->chunks[w + 32 * d], info->world->chunks);
+        int w = i % 64;
+        int d = i / 64;
+        chunk_meshes[i - info->start] = create_mesh(&info->world->chunks[w + 64 * d], info->world->chunks);
+        info->world->chunks[w + 64 * d].mesh = chunk_meshes[i - info->start].mesh;
     }
 
     info->chunk_mesh = chunk_meshes;

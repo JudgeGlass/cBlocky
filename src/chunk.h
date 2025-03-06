@@ -33,6 +33,7 @@ typedef struct
     i32 size_v;
     i32 size_tex;
     mesh_t mesh;
+    chunk_t *chunk;
 } chunk_mesh_t;
 
 static void add_face(u8 x, u8 y, u8 z, chunk_t *chunk, face_t face, u8 id, f32 **vertices, f32 **tex_coords, chunk_t *world_chunks);

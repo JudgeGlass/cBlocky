@@ -7,11 +7,6 @@ chunk_mesh_t create_mesh(chunk_t *chunk, chunk_t *world_chunks)
     f32 *vertices = NULL;
     f32 *textures = NULL;
 
-    // glGenVertexArrays(1, &mesh.VAO);
-    // glBindVertexArray(mesh.VAO);
-    // glGenBuffers(1, &mesh.VBO);
-    // glGenBuffers(1, &mesh.TBO);
-
     for (i32 x = 0; x < CHUNK_WIDTH; x++)
     {
         for (i32 y = 0; y < CHUNK_HEIGHT; y++)
@@ -39,27 +34,14 @@ chunk_mesh_t create_mesh(chunk_t *chunk, chunk_t *world_chunks)
     i32 size_v = arrlen(vertices);
     i32 size_tex = arrlen(textures);
 
-    // glBindVertexArray(mesh.VAO);
-
-    // glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(f32) * size_v, vertices, GL_STATIC_DRAW);
-
-    // glBindBuffer(GL_ARRAY_BUFFER, mesh.TBO);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(f32) * size_tex, textures, GL_STATIC_DRAW);
-
-    // glBindVertexArray(0);
-
     mesh.vertex_count = size_v;
 
-    chunk->mesh = mesh;
     chunk_mesh.mesh = mesh;
     chunk_mesh.vertices = vertices;
     chunk_mesh.textures = textures;
     chunk_mesh.size_v = size_v;
     chunk_mesh.size_tex = size_tex;
-    // arrfree(vertices);
-    // arrfree(textures);
-
+    chunk_mesh.chunk = chunk;
     return chunk_mesh;
 }
 
@@ -81,7 +63,7 @@ u8 is_face_visible(i32 x, i32 y, i32 z, chunk_t *chunk, face_t face, u8 id, chun
     {
         if (cx - 1 >= 0)
         {
-            block = get_block(get_chunk(world_chunks, 32, 32, cx - 1, cz), 15, y, z);
+            block = get_block(get_chunk(world_chunks, 64, 64, cx - 1, cz), 15, y, z);
         }
         else
         {
@@ -92,7 +74,7 @@ u8 is_face_visible(i32 x, i32 y, i32 z, chunk_t *chunk, face_t face, u8 id, chun
     {
         if (cx + 1 < CHUNK_WIDTH)
         {
-            block = get_block(get_chunk(world_chunks, 32, 32, cx + 1, cz), 0, y, z);
+            block = get_block(get_chunk(world_chunks, 64, 64, cx + 1, cz), 0, y, z);
         }
         else
         {
@@ -103,7 +85,7 @@ u8 is_face_visible(i32 x, i32 y, i32 z, chunk_t *chunk, face_t face, u8 id, chun
     {
         if (cz - 1 >= 0)
         {
-            block = get_block(get_chunk(world_chunks, 32, 32, cx, cz - 1), x, y, 15);
+            block = get_block(get_chunk(world_chunks, 64, 64, cx, cz - 1), x, y, 15);
         }
         else
         {
@@ -114,7 +96,7 @@ u8 is_face_visible(i32 x, i32 y, i32 z, chunk_t *chunk, face_t face, u8 id, chun
     {
         if (cz + 1 < CHUNK_DEPTH)
         {
-            block = get_block(get_chunk(world_chunks, 32, 32, cx, cz + 1), x, y, 0);
+            block = get_block(get_chunk(world_chunks, 64, 64, cx, cz + 1), x, y, 0);
         }
         else
         {
