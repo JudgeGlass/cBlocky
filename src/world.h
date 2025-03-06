@@ -29,6 +29,7 @@ typedef struct
     u32 start;
     u32 end;
     world_t *world;
+    chunk_mesh_t *chunk_mesh;
 } thread_gen_chunk_t;
 
 void world_create(u32 chunk_amt_width, u32 chunk_amt_depth, world_t *world, camera_t *camera);

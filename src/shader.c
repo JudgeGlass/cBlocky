@@ -33,8 +33,8 @@ u32 load_shader()
     const char *v_source = get_shader_content("res/vertex_es.glsl");
     const char *f_source = get_shader_content("res/fragment_es.glsl");
 #else
-    const char *v_source = get_shader_content("../res/vertex.glsl");
-    const char *f_source = get_shader_content("../res/fragment.glsl");
+    const char *v_source = get_shader_content("/home/hwilcox/cBlocky/res/vertex.glsl");
+    const char *f_source = get_shader_content("/home/hwilcox/cBlocky/res/fragment.glsl");
 #endif
 
     i32 result = GL_FALSE;

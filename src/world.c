@@ -16,7 +16,7 @@ void world_create(u32 chunk_amt_width, u32 chunk_amt_depth, world_t *world, came
     //     }
     // }
 
-    int p_cores = 16;
+    int p_cores = 4;
     pthread_t thread_ids[p_cores];
     thread_gen_chunk_t info[p_cores];
 
@@ -60,6 +60,30 @@ void world_create(u32 chunk_amt_width, u32 chunk_amt_depth, world_t *world, came
     {
         printf("Threads remaining: %d\n", threads_left);
         pthread_join(thread_ids[i], NULL);
+        for (int j = 0; j < (info[i].end - info[i].start); j++)
+        {
+            mesh_t mesh = info[i].chunk_mesh[j].mesh;
+            i32 size_v = info[i].chunk_mesh[j].size_v;
+            i32 size_tex = info[i].chunk_mesh[j].size_tex;
+            f32 *vertices = info[i].chunk_mesh[j].vertices;
+            f32 *textures = info[i].chunk_mesh[j].textures;
+            i32 s = arrlen(vertices);
+            glGenVertexArrays(1, &mesh.VAO);
+            glBindVertexArray(mesh.VAO);
+            glGenBuffers(1, &mesh.VBO);
+            glGenBuffers(1, &mesh.TBO);
+            glBindVertexArray(mesh.VAO);
+
+            glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(f32) * size_v, vertices, GL_STATIC_DRAW);
+
+            glBindBuffer(GL_ARRAY_BUFFER, mesh.TBO);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(f32) * size_tex, textures, GL_STATIC_DRAW);
+
+            glBindVertexArray(0);
+            arrfree(vertices);
+            arrfree(textures);
+        }
         threads_left--;
     }
 
@@ -90,14 +114,16 @@ void *thread_gen_chunk(void *sew)
         init_chunk(&info->world->chunks[w + 32 * d], w, d, ctx);
     }
 
+    chunk_mesh_t *chunk_meshes = (chunk_mesh_t *)malloc(sizeof(chunk_mesh_t) * (info->end - info->start));
     for (int i = info->start; i < info->end; i++)
     {
         int w = i % 32;
         int d = i / 32;
         // printf("I: %d E: %d\n", i, info->end);
-        create_mesh(&info->world->chunks[w + 32 * d], info->world->chunks);
+        chunk_meshes[i - info->start] = create_mesh(&info->world->chunks[w + 32 * d], info->world->chunks);
     }
 
+    info->chunk_mesh = chunk_meshes;
     return NULL;
 }
 

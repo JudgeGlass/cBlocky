@@ -119,7 +119,7 @@ void loop()
 void load_textures()
 {
     i32 width, height, nrChannels;
-    u8 *data = stbi_load("../res/atlas.png", &width, &height, &nrChannels, 0);
+    u8 *data = stbi_load("/home/hwilcox/cBlocky/res/atlas.png", &width, &height, &nrChannels, 0);
     if (!data)
     {
         printf("Failed to load texture!\n");

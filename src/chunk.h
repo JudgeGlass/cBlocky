@@ -25,14 +25,22 @@ typedef struct
     block_t blocks[CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_DEPTH] __attribute__((aligned(64)));
     mesh_t mesh;
 } chunk_t __attribute__((aligned(64)));
-;
+
+typedef struct
+{
+    f32 *vertices;
+    f32 *textures;
+    i32 size_v;
+    i32 size_tex;
+    mesh_t mesh;
+} chunk_mesh_t;
 
 static void add_face(u8 x, u8 y, u8 z, chunk_t *chunk, face_t face, u8 id, f32 **vertices, f32 **tex_coords, chunk_t *world_chunks);
 static u8 is_face_visible(i32 x, i32 y, i32 z, chunk_t *chunk, face_t face, u8 id, chunk_t *world_chunks);
 static void create_tree(chunk_t *chunk, i32 x, i32 y, i32 z);
 
 void init_chunk(chunk_t *chunk, i32 cx, i32 cz, struct osn_context *ctx);
-void create_mesh(chunk_t *chunk, chunk_t *world_chunks);
+chunk_mesh_t create_mesh(chunk_t *chunk, chunk_t *world_chunks);
 void draw_chunk(const chunk_t *chunk, u32 texture_id);
 void update_chunk(chunk_t *chunk);
 void destroy_chunk(chunk_t *chunk);
