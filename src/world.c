@@ -8,7 +8,7 @@ void world_create(u32 chunk_amt_width, u32 chunk_amt_depth, world_t *world, came
     world->chunk_amt_depth = chunk_amt_depth;
     open_simplex_noise(77374, &ctx);
 
-    int p_cores = 8;
+    int p_cores = 16;
     pthread_t thread_ids[p_cores];
     thread_gen_chunk_t info[p_cores];
 
